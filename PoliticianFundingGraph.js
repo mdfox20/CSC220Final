@@ -11,15 +11,14 @@ $(document).ready(function() {
 });
 
 function processData(allText) {
-  console.log("in process data");
     let allTextLines = allText.split(/\r\n|\n/);
-    let lines = [];
+    var lines = [];
 
-    for (let i=1; i<allTextLines[0].split(',').length; i++) {
+    for (let i=1; i<allTextLines.length; i++) {
         let data = allTextLines[i].split(',');
-        lines.push(data[i]);
+        lines.push(data);
     }
-  console.log(lines);
+  console.log(lines[0]);
 }
 
 //Constructor for politician node
