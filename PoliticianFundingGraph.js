@@ -10,15 +10,9 @@ $(document).ready(function() {
      });
 });
 
-function processData(allText) {
-    let allTextLines = allText.split(/\r\n|\n/);
-    var lines = [];
-
-    for (let i=1; i<allTextLines.length; i++) {
-        let data = allTextLines[i].split(',');
-        lines.push(data);
-    }
-  console.log(lines[0]);
+function processData(csv_text) {
+  var data = $.csv.toObjects(csv_text);
+  console.log(data);
 }
 
 //Constructor for politician node
