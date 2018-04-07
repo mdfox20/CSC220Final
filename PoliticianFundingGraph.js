@@ -1,24 +1,23 @@
 
-// From https://stackoverflow.com/questions/7431268/how-to-read-data-from-csv-file-using-javascript
+// Array of all filenames will go in here
+let nameArr = ["paul_ryan"];
 
-$(document).ready(function() {
-    $.ajax({
-        type: "GET",
-        url: "paul_ryan.csv",
-        dataType: "text",
-        success: function(paul_ryan) {processData(paul_ryan);}
-     });
-});
+// Loop through list of files, and open each one
+for (let i = 0; i < nameArr.length; i++){
+  let fileName = nameArr[i] + ".csv";
+  $(document).ready(function() { // Code from https://stackoverflow.com/questions/7431268/how-to-read-data-from-csv-file-using-javascript
+      $.ajax({
+          type: "GET",
+          url: fileName,
+          dataType: "text",
+          success: function(fileName) {processData(fileName);}
+       });
+  });
+}
 
-function processData(allText) {
-    let allTextLines = allText.split(/\r\n|\n/);
-    var lines = [];
-
-    for (let i=1; i<allTextLines.length; i++) {
-        let data = allTextLines[i].split(',');
-        lines.push(data);
-    }
-  console.log(lines[0]);
+function processData(csv_text) { // Code from https://stackoverflow.com/questions/7431268/how-to-read-data-from-csv-file-using-javascript/12289296#12289296
+  let data = $.csv.toObjects(csv_text); // Changed from original var to let
+  console.log(data);
 }
 
 //Constructor for politician node
