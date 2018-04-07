@@ -2,12 +2,45 @@
 <html>
 
   <head>
+    <title>Politicians and Funding Sources</title>
+    <h1>Politicians and Funding Sources</h1>
   </head>
 
   <body>
+    <div>
+      <aside>
+        <form>
+          <div>
 
-    <script></script>
-    
+          	<!-- This is how you make a dropdown menu -->
+            <label for="selPol">Politician:</label>
+
+            <!-- Note the unique id, this is how you'll access the field's values later -->
+            <select id="selPol">
+              <option selected>All</option>
+              <option>Paul Ryan</option>
+            </select>
+          </div>
+          <div>
+            <label for="selFundSource">Funding Source:</label>
+
+            <!-- Note the unique id, this is how you'll access the field's values later -->
+            <select id="selFundSource">
+              <option selected>All</option>
+            </select>
+          </div>
+          <div>
+            <button>Start</button>
+          </div>
+          <div>
+            <button>Clear</button>
+          </div>
+        </form>
+      </aside>
+      <main>
+      </main>
+    </div>
+    <script src="PoliticianFundingGraph.js"></script>
   </body>
 
 </html>

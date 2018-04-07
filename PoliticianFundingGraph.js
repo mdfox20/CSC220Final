@@ -1,8 +1,10 @@
 
+console.log("testing");
+
 //Constructor for politician node
 function Politician(name, fundingMap) {
   this.name = name;
-  this.fundingMap = findFundingSource(this, fundingMap);
+  this.fundingMap = findFundingSource(this, fundingMap); //map of funding sources (key) and amount of $ given (value)
 
   politicians.push(this);
 }
@@ -28,7 +30,7 @@ function findFundingSource(politician, fundingMap) {
     //look through list of all funding source objects
     for (let fs of fundingSources) {
       //if funding source object already exists for source, update its politician list
-      if source == fs.name {
+      if (source == fs.name) {
         found = true;
         fs.addPolitician(politician);
         fundingMap.set(fs, amount); //update map so key is funding source object
