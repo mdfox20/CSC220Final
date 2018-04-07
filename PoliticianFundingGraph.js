@@ -32,7 +32,7 @@ function processData(allText) {
 //Constructor for politician node
 function Politician(name, fundingMap) {
   this.name = name;
-  this.fundingMap = fundingMap; //map of funding sources and $ amount received
+  this.fundingMap = findFundingSource(this, fundingMap);
 
   politicians.push(this);
 }
@@ -51,7 +51,31 @@ function FundingSource(name) {
 }
 
 //Given a politician, identify if all funding source objects exist yet, and if not, create and add them to master list
+function findFundingSource(politician, fundingMap) {
+  //loop through current funding map
+  for (let [source, amount] of fundingMap) {
+    let found = false; //variable to keep track of if funding source object found
+    //look through list of all funding source objects
+    for (let fs of fundingSources) {
+      //if funding source object already exists for source, update its politician list
+      if source == fs.name {
+        found = true;
+        fs.addPolitician(politician);
+        fundingMap.set(fs, amount); //update map so key is funding source object
 
+        return fundingMap;
+      }
+    }
+    //if funding source object doesn't exist for source, make one
+    if (found == false) {
+      let fs = new FundingSource(source);
+      fs.addPolitician(politician);
+      fundingMap.set(fs, amount); //update map so key is funding source object
+
+      return fundingMap;
+    }
+  }
+}
 
 //Master lists of politicians and funding sources
 let politicians = [];
