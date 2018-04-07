@@ -1,15 +1,17 @@
 
 
+// From https://stackoverflow.com/questions/7431268/how-to-read-data-from-csv-file-using-javascript
 $(document).ready(function() {
     $.ajax({
         type: "GET",
         url: "paul_ryan.csv",
-        dataType: "csv",
-        success: function(data) {processData(data);}
+        dataType: "text",
+        success: function(paul_ryan) {processData(paul_ryan);}
      });
 });
 
 function processData(allText) {
+    console.log("success");
     var allTextLines = allText.split(/\r\n|\n/);
     var headers = allTextLines[0].split(',');
     var lines = [];
@@ -25,7 +27,7 @@ function processData(allText) {
             lines.push(tarr);
         }
     }
-    // alert(lines);
+    console.log(lines);
 }
 
 
