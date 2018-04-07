@@ -1,33 +1,24 @@
 
-
 $(document).ready(function() {
     $.ajax({
         type: "GET",
         url: "paul_ryan.csv",
-        dataType: "csv",
-        success: function(data) {processData(data);}
+        dataType: "text",
+        success: function(paul_ryan) {processData(paul_ryan);}
      });
 });
 
 function processData(allText) {
-    var allTextLines = allText.split(/\r\n|\n/);
-    var headers = allTextLines[0].split(',');
-    var lines = [];
+  console.log("in process data");
+    let allTextLines = allText.split(/\r\n|\n/);
+    let lines = [];
 
-    for (var i=1; i<allTextLines.length; i++) {
-        var data = allTextLines[i].split(',');
-        if (data.length == headers.length) {
-
-            var tarr = [];
-            for (var j=0; j<headers.length; j++) {
-                tarr.push(headers[j]+":"+data[j]);
-            }
-            lines.push(tarr);
-        }
+    for (let i=1; i<allTextLines[0].split(',').length; i++) {
+        let data = allTextLines[i].split(',');
+        lines.push(data[i]);
     }
-    // alert(lines);
+  console.log(lines);
 }
-
 
 //Constructor for politician node
 function Politician(name, fundingMap) {
