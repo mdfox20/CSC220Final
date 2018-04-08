@@ -42,8 +42,6 @@ function processData(csv_text, person_name) { // Based off code from https://sta
   // Add new Politician object to list, using their name and contribution map
   politicians.push(new Politician(person_name, map));
 
-  console.log(politicians.length);
-
 }
 
 //Constructor for politician node
