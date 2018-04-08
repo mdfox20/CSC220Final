@@ -1,31 +1,56 @@
+/* Maybe change the way we read in files later? Ideally, it might be better
+   to be able to just grab all the files within a directory, rather than
+  having to list each one? */
+/* May have a JSON file that only contains the name of each politician and
+   their CSV file name. Then we could just loop through entires in the JSON
+   file instead of having to hard-code everything. */
 
-// Array of all filenames will go in here
+// All file names will go in here (for now)
 let nameArr = ["paul_ryan"];
 
-// Loop through list of files, and open each one
+// All Politician objects (extracted from files) will go here
+let politicians = [];
+
+// All funding sources (extracted from Politician objects) will go here
+let fundingSources = [];
+
+// Loop through list of files, open each one, and process each one
 for (let i = 0; i < nameArr.length; i++){
   let fileName = nameArr[i] + ".csv";
-  $(document).ready(function() { // Code from https://stackoverflow.com/questions/7431268/how-to-read-data-from-csv-file-using-javascript
+  $(document).ready(function() { // This code block from https://stackoverflow.com/questions/7431268/how-to-read-data-from-csv-file-using-javascript
       $.ajax({
           type: "GET",
           url: fileName,
           dataType: "text",
-          success: function(fileName) {processData(fileName);}
+          success: function(fileName) {processData(fileName, nameArr[i]);}
        });
   });
 }
 
-function processData(csv_text) { // Code from https://stackoverflow.com/questions/7431268/how-to-read-data-from-csv-file-using-javascript/12289296#12289296
-  let data = $.csv.toObjects(csv_text); // Changed from original var to let
-  console.log(data);
+// Process the data for one politician
+function processData(csv_text, person_name) { // Based off code from https://stackoverflow.com/questions/7431268/how-to-read-data-from-csv-file-using-javascript/12289296#12289296
+
+  // Converts CSV string into array of objects
+  let arrLines = $.csv.toObjects(csv_text);
+
+  // Build map of companies -> amount donated
+  let map = new Map();
+  for (let i = 0; i < arrLines.length; i++){
+    map.set(arrLines[i].ultorg, arrLines[i].total);
+  }
+
+  // Add new Politician object to list, using their name and contribution map
+  politicians.push(new Politician(person_name, map));
+
+  console.log(politicians.length);
+
 }
 
 //Constructor for politician node
 function Politician(name, fundingMap) {
   this.name = name;
   this.fundingMap = findFundingSource(this, fundingMap); //map of funding sources (key) and amount of $ given (value)
-
-  politicians.push(this);
+  // politicians.push(this); // Took this out for now because I added it to array earlier -Hannah
 }
 
 //Constructor for funding source node
@@ -67,7 +92,3 @@ function findFundingSource(politician, fundingMap) {
     }
   }
 }
-
-//Master lists of politicians and funding sources
-let politicians = [];
-let fundingSources = [];
