@@ -1,0 +1,146 @@
+{
+ "name": "Center",
+ "color":1,
+ "children": [
+  {
+   "name": "First_1",
+	 "color":2,
+	 "collapse":1,
+   "children": [
+    {
+     "name": "First_2",
+		 "color":3,
+		 "collapse":1,
+     "children": [
+      {"name": "First_3", "size": 10},
+      {"name": "First_3", "size": 10},
+			{"name": "First_3", "size": 10}
+     ]
+    },
+    {
+     "name": "First_2",
+		 "color":3,
+		 "collapse":1,
+     "children": [
+      {"name": "First_3", "size": 15},
+      {"name": "First_3", "size": 15}
+     ]
+    },
+		{
+     "name": "First_2",
+		 "color":3,
+		 "collapse":1,
+     "children": [
+      {"name": "First_3", "size": 20}
+     ]
+    },
+		{
+     "name": "First_2",
+		 "color":3,
+		 "collapse":1,
+     "children": [
+      {"name": "First_3", "size": 25},
+      {"name": "First_3", "size": 25},
+			{"name": "First_3", "size": 25},
+			{"name": "First_3", "size": 25}
+     ]
+    },
+		{
+     "name": "First_2",
+		 "color":3,
+		 "collapse":1,
+     "children": [
+      {"name": "First_3", "size": 30},
+      {"name": "First_3", "size": 30}
+     ]
+    },{
+     "name": "First_2",
+		 "color":3,
+		 "collapse":1,
+     "children": [
+      {"name": "First_3", "size": 35},
+      {"name": "First_3", "size": 35}
+     ]
+    },{
+     "name": "First_2",
+		 "color":3,
+		 "collapse":1,
+     "children": [
+      {"name": "First_3", "size": 40},
+      {"name": "First_3", "size": 40},
+			{"name": "First_3", "size": 40}
+     ]
+    }
+   ]
+  },
+	{
+   "name": "Second_1",
+	 "color":2,
+	 "collapse":1,
+   "children": [
+    {
+     "name": "Second_2",
+		 "color":3,
+		 "collapse":1,
+     "children": [
+      {"name": "Second_3", "size": 10},
+      {"name": "Second_3", "size": 10},
+			{"name": "Second_3", "size": 10},
+      {"name": "Second_3", "size": 10},
+      {"name": "Second_3", "size": 10},
+			{"name": "Second_3", "size": 10}
+     ]
+    },
+    {
+     "name": "Second_2",
+		 "color":3,
+		 "collapse":1,
+     "children": [
+      {"name": "Second_3", "size": 15}
+     ]
+    },
+		{
+     "name": "Second_2",
+		 "color":3,
+		 "collapse":1,
+     "children": []
+    },
+		{
+     "name": "Second_2",
+		 "color":3,
+		 "collapse":1,
+     "children": [
+      {"name": "Second_3", "size": 25},
+      {"name": "Second_3", "size": 25},
+			{"name": "Second_3", "size": 25}
+     ]
+    },
+		{
+     "name": "Second_2",
+		 "color":3,
+		 "collapse":1,
+     "children": [
+      {"name": "Second_3", "size": 30},
+      {"name": "Second_3", "size": 30},
+      {"name": "Second_3", "size": 30}
+     ]
+    },{
+     "name": "Second_2",
+		 "color":3,
+		 "collapse":1,
+     "children": [
+      {"name": "Second_3", "size": 35},
+      {"name": "Second_3", "size": 35}
+     ]
+    },{
+     "name": "Second_2",
+		 "color":3,
+		 "collapse":1,
+     "children": [
+      {"name": "Second_3", "size": 40}
+     ]
+    }
+   ]
+  }
+ ]
+}
