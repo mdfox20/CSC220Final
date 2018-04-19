@@ -89,6 +89,7 @@ function loadInData() {
       }
     }
   }
+  graphics();
 }
 
 
@@ -409,46 +410,6 @@ function graphics() {
       }
     };
 
-    // /* place editable text on node in place of svg text */
-    // GraphCreator.prototype.changeTextOfNode = function(d3node, d){
-    //   var thisGraph= this,
-    //       consts = thisGraph.consts,
-    //       htmlEl = d3node.node();
-    //   d3node.selectAll("text").remove();
-    //   var nodeBCR = htmlEl.getBoundingClientRect(),
-    //       curScale = nodeBCR.width/consts.nodeRadius,
-    //       placePad  =  5*curScale,
-    //       useHW = curScale > 1 ? nodeBCR.width*0.71 : consts.nodeRadius*1.42;
-    //   // replace with editableconent text
-    //   var d3txt = thisGraph.svg.selectAll("foreignObject")
-    //         .data([d])
-    //         .enter()
-    //         .append("foreignObject")
-    //         .attr("x", nodeBCR.left + placePad )
-    //         .attr("y", nodeBCR.top + placePad)
-    //         .attr("height", 2*useHW)
-    //         .attr("width", useHW)
-    //         .append("xhtml:p")
-    //         .attr("id", consts.activeEditId)
-    //         .attr("contentEditable", "true")
-    //         .text(d.title)
-    //         .on("mousedown", function(d){
-    //           d3.event.stopPropagation();
-    //         })
-    //         .on("keydown", function(d){
-    //           d3.event.stopPropagation();
-    //           if (d3.event.keyCode == consts.ENTER_KEY && !d3.event.shiftKey){
-    //             this.blur();
-    //           }
-    //         })
-    //         .on("blur", function(d){
-    //           d.title = this.textContent;
-    //           thisGraph.insertTitleLinebreaks(d3node, d.title);
-    //           d3.select(this.parentElement).remove();
-    //         });
-    //   return d3txt;
-    // };
-
     // mouseup on nodes
     GraphCreator.prototype.circleMouseUp = function(d3node, d){
       var thisGraph = this,
@@ -701,4 +662,3 @@ function graphics() {
 }
 
 loadInData();
-graphics();
