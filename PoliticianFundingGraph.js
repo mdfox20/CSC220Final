@@ -401,13 +401,6 @@ function graphics() {
           state = thisGraph.state;
       d3.event.stopPropagation();
       state.mouseDownNode = d;
-      if (d3.event.shiftKey){
-        state.shiftNodeDrag = d3.event.shiftKey;
-        // reposition dragged directed edge
-        thisGraph.dragLine.classed('hidden', false)
-          .attr('d', 'M' + d.x + ',' + d.y + 'L' + d.x + ',' + d.y);
-        return;
-      }
     };
 
     // mouseup on nodes
@@ -423,7 +416,7 @@ function graphics() {
 
       if (!mouseDownNode) return;
 
-      thisGraph.dragLine.classed("hidden", true);
+
 
       if (mouseDownNode !== d){
         // we're in a different node: create new edge for mousedown edge and add to graph
@@ -444,14 +437,6 @@ function graphics() {
           // dragged, not clicked
           state.justDragged = false;
         } else{
-          // clicked, not dragged
-          if (d3.event.shiftKey){
-            // shift-clicked node: edit text content
-            var d3txt = thisGraph.changeTextOfNode(d3node, d);
-            var txtNode = d3txt.node();
-            thisGraph.selectElementContents(txtNode);
-            txtNode.focus();
-          } else{
             if (state.selectedEdge){
               thisGraph.removeSelectFromEdge();
             }
@@ -462,7 +447,6 @@ function graphics() {
             } else{
               thisGraph.removeSelectFromNode();
             }
-          }
         }
       }
       state.mouseDownNode = null;
@@ -488,13 +472,6 @@ function graphics() {
             d = {id: thisGraph.idct++, title: "new concept", x: xycoords[0], y: xycoords[1]};
         thisGraph.nodes.push(d);
         thisGraph.updateGraph();
-        // make title of text immediently editable
-        var d3txt = thisGraph.changeTextOfNode(thisGraph.circles.filter(function(dval){
-          return dval.id === d.id;
-        }), d),
-            txtNode = d3txt.node();
-        thisGraph.selectElementContents(txtNode);
-        txtNode.focus();
       } else if (state.shiftNodeDrag){
         // dragged from node
         state.shiftNodeDrag = false;
