@@ -1,5 +1,16 @@
+img {
+  position: fixed;
+  overflow: hidden;
+  left: 0;
+  top: 0;
+}
 fieldset {
-  padding: 10px;
+  padding: 5px;
+  width: 100%;
+}
+div {
+  text-align: right;
+  padding-right: 30px
 }
 select { /* from https://www.w3schools.com/css/css_form.asp */
     width: 15%;
@@ -7,8 +18,9 @@ select { /* from https://www.w3schools.com/css/css_form.asp */
     border: none;
     border-radius: 4px;
     background-color: #d3d3d3;
+
 }
-button {
+button { /* from https://www.w3schools.com/css/css_form.asp */
   background-color: #4CAF50;
   border: none;
   color: white;
@@ -16,6 +28,7 @@ button {
   text-decoration: none;
   margin: 4px 2px;
   cursor: pointer;
+  margin-right: 100px
 }
 body{
   margin: 0;
