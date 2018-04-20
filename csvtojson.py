@@ -1,37 +1,45 @@
 import csv
 import json
+import glob
 
-fname = "paul_ryan.csv"
+# Get all CSV files
+fnames = glob.glob("*.csv")
 
-# Remove unneccesary columns from csv
-with open(fname,'r') as source:
-    reader = csv.reader(source)
-    with open('paul_ryan_fixed.csv','w') as result:
-      writer = csv.writer(result)
-      for r in reader:
-        writer.writerow( (r[3], r[4], "funding source"))
-        
-      result.close()
-      source.close()
+jsonfile = open('nodes.json', 'w')
+jsonfile.write("[")
 
-# Convert CSV to JSON
-csvfile = open('paul_ryan_fixed.csv', 'r')
+# Loop through all CSV files
+for fname in fnames: 
+  # Remove unneccesary columns from csv and add additional funding source column
+  with open(fname,'r') as source:
+      reader = csv.reader(source)
+      with open(f'{fname.replace(".csv", "")}_fixed.csv','w') as result:
+        writer = csv.writer(result)
+        for row in reader:
+          writer.writerow( (row[3], row[4], "funding source"))
+          
+        result.close()
+        source.close()
 
-fieldnames = ("name","amountDonated", "type")
-reader = csv.DictReader(csvfile, fieldnames)
-next(reader);
+  # Convert CSV to JSON
+  csvfile = open(f'{fname.replace(".csv", "")}_fixed.csv', 'r')
 
-with open('nodes.json', 'w') as jsonfile:
-  jsonfile.write("[")
+  fieldnames = ("name","amountDonated", "type")
+  reader = csv.DictReader(csvfile, fieldnames)
+  next(reader); # Skip header row
 
   name = fname.replace(".csv", "").replace("_", " ").title()
-  json.dump({"name": name, "type": "politician"}, jsonfile)
+  json.dump({"name": name, "type": "politician"}, jsonfile) # Add politician node
   
   for row in reader:
     jsonfile.write(',\n')
     json.dump(row, jsonfile)
-  
-  jsonfile.write("\n]")
 
+  if (fname != fnames[len(fnames)-1]):
+    jsonfile.write(',\n')
+    
   csvfile.close()
-  jsonfile.close()
+  
+jsonfile.write("\n]")
+jsonfile.close()
+
