@@ -7,7 +7,7 @@ with open('paul_ryan.csv','r') as source:
     with open('paul_ryan_fixed.csv','w') as result:
       writer = csv.writer(result)
       for r in reader:
-        writer.writerow( (r[3], r[4]) )
+        writer.writerow( (r[3], r[4], "funding source"))
         
       result.close()
       source.close()
@@ -15,7 +15,7 @@ with open('paul_ryan.csv','r') as source:
 # Convert CSV to JSON
 csvfile = open('paul_ryan_fixed.csv', 'r')
 
-fieldnames = ("name","amountDonated")
+fieldnames = ("name","amountDonated", "type")
 reader = csv.DictReader(csvfile, fieldnames)
 next(reader);
 
