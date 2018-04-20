@@ -1,153 +1,42 @@
 <!DOCTYPE html>
 <html>
   <meta charset="utf-8">
-  <style>
-
-  select { /* from https://www.w3schools.com/css/css_form.asp */
-      width: 15%;
-      padding: 8px 10px;
-      border: none;
-      border-radius: 4px;
-      background-color: #f1f1f1;
-  }
-  button {
-    background-color: #4CAF50;
-    border: none;
-    color: white;
-    padding: 8px 10px;
-    text-decoration: none;
-    margin: 4px 2px;
-    cursor: pointer;
-}
-  body{
-    margin: 0;
-    padding: 0;
-    overflow:hidden;
-}
-
-p{
-     text-align: center;
-     overflow: overlay;
-     position: relative;
-}
-
-body{
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    background-color: rgb(248, 248, 248)
-}
-
-#toolbox{
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    margin-bottom: 0.5em;
-    margin-left: 1em;
-    border: 2px solid #EEEEEE;
-    border-radius: 5px;
-    padding: 1em;
-    z-index: 5;
-}
-
-#toolbox input{
-    width: 30px;
-    opacity: 0.4;
-}
-#toolbox input:hover{
-    opacity: 1;
-    cursor: pointer;
-}
-
-#hidden-file-upload{
-    display: none;
-}
-
-#download-input{
-    margin: 0 0.5em;
-}
-
-.conceptG text{
-    pointer-events: none;
-}
-
-marker{
-    fill: #333;
-}
-
-g.conceptG circle{
-    fill: #F6FBFF;
-    stroke: #333;
-    stroke-width: 2px;
-}
-
-g.conceptG:hover circle{
-    fill: rgb(200, 238, 241);
-}
-
-g.selected circle{
-    fill: rgb(250, 232, 255);
-}
-
-
-path.link {
-    fill: none;
-    stroke: #333;
-    stroke-width: 6px;
-    cursor: default;
-}
-
-g.connect-node circle{
-    fill: #BEFFFF;
-}
-
-path.link.hidden{
-    stroke-width: 0;
-}
-
-
-</style>
+  <link href="style.css" rel="stylesheet">
 
   <head>
     <title>Politicians and Funding Sources</title>
-    <h1>Politicians and Funding Sources</h1>
+    <!-- <h1>Politicians and Funding Sources</h1> -->
   </head>
 
   <body>
     <div>
       <aside>
-        <form>
-          <div>
+        <form class="pure-form">
+          <fieldset>
+            <h1 class="pure-form inline">Politicians and Funding Sources</h1>
           	<!-- Politican selection drop down menu -->
-            <label for="selPol">Politician:</label> <br />
-
+            <label for="selPol">Politician:</label>
             <select id="selPol">
               <option selected>All</option>
               <option>Paul Ryan</option>
             </select>
-          </div>
-          <div>
-            <button>Add</button>
-          </div>
-          <div>
-            <!-- Funding source selection drop down menu -->
-            <label for="selFundSource">Funding Source:</label> <br />
 
+            <button>Add</button>
+
+
+            <!-- Funding source selection drop down menu -->
+            <label for="selFundSource">Funding Source:</label>
             <select id="selFundSource">
               <option selected>All</option>
             </select>
-          </div>
 
-          <div>
+
             <button>Add</button>
-          </div>
 
-          <div>
+
             <button>Clear</button>
-          </div>
+
+        </fieldset>
         </form>
       </aside>
       <main>
