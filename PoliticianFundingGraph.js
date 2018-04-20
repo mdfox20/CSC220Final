@@ -1,5 +1,55 @@
 
+function loadData() {
+
+  // (This code block taken from Mozilla search tutorial)
+
+  // Use fetch to retrieve JSON file
+  fetch('nodes.json').then(function(response) {
+    if(response.ok) {
+      response.json().then(function(json) {
+        nodes = json;
+      });
+    } else { // If retrieval of JSON file fails, print error message
+      console.log('Network request for nodes.json failed with response ' + response.status + ': ' + response.statusText);
+    }
+  });
+
+  // Use fetch to retrieve JSON file
+  fetch('edges.json').then(function(response) {
+    if(response.ok) {
+      response.json().then(function(json) {
+        edges = json;
+      });
+    } else { // If retrieval of JSON file fails, print error message
+      console.log('Network request for edges.json failed with response ' + response.status + ': ' + response.statusText);
+    }
+  });
+
+}
+
+
 function graphics() {
+
+  loadData();
+
+  // Add options to HTML dropdown menu based on nodes
+
+  // Assumed format of node: [name, type (pol or comp), party (if pol)]
+  // Type can either be "Politician" or "Donor"
+
+  // Grab the dropdown menu elements from HTML
+  let selectPol = document.querySelector('#selPol');
+  let selectFundSource = document.querySelector('#selFundSource');
+
+  // Loop through the nodes and add to appropriate menu
+  // Based on https://stackoverflow.com/questions/17730621/how-to-dynamically-add-options-to-an-existing-select-in-vanilla-javascript
+  for (let i = 0; i < nodes.length; i++) {
+    if (nodes[i].type === "Politician") {
+      selectPol.options[selectPol.options.length] = new Option(nodes[i].name, nodes[i].name);
+    } else { // Otherwise it's a donor node
+      selectFundSource.options[selectFundSource.options.length] = new Option(nodes[i].name, nodes[i].name);
+    }
+  }
 
   document.onload = (function(d3, saveAs, Blob, undefined){
     "use strict";
