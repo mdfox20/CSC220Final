@@ -3,21 +3,22 @@
   <meta charset="utf-8">
   <style>
 
-  /* .node circle {
+  select { /* from https://www.w3schools.com/css/css_form.asp */
+      width: 15%;
+      padding: 8px 10px;
+      border: none;
+      border-radius: 4px;
+      background-color: #f1f1f1;
+  }
+  button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 8px 10px;
+    text-decoration: none;
+    margin: 4px 2px;
     cursor: pointer;
-  }
-
-  .node text {
-    font: 10px sans-serif;
-    pointer-events: none;
-    text-anchor: middle;
-  }
-
-  line.link {
-    fill: none;
-    stroke: #9ecae1;
-    stroke-width: 1.5px;
-  } */
+}
   body{
     margin: 0;
     padding: 0;
@@ -90,19 +91,13 @@ g.conceptG:hover circle{
 g.selected circle{
     fill: rgb(250, 232, 255);
 }
-g.selected:hover circle{
-    fill: rgb(250, 232, 255);
-}
+
 
 path.link {
     fill: none;
     stroke: #333;
     stroke-width: 6px;
     cursor: default;
-}
-
-path.link:hover{
-    stroke: rgb(94, 196, 204);
 }
 
 g.connect-node circle{
@@ -113,65 +108,51 @@ path.link.hidden{
     stroke-width: 0;
 }
 
-path.link.selected {
-    stroke: rgb(229, 172, 247);
-}
+
 </style>
 
   <head>
     <title>Politicians and Funding Sources</title>
+    <h1>Politicians and Funding Sources</h1>
   </head>
 
   <body>
-
-    <h1>Politicians and Funding Sources</h1>
-
     <div>
-
       <aside>
-
         <form>
-
-          <div> <!-- Inner div for politician selector -->
-
+          <div>
           	<!-- Politican selection drop down menu -->
-            <label for="selPol">Politician:</label>
+            <label for="selPol">Politician:</label> <br />
 
             <select id="selPol">
               <option selected>All</option>
+              <option>Paul Ryan</option>
             </select>
-
-          </div> <!-- Close inner div -->
-
-          <div> <!-- Another inner div for company selector -->
-
+          </div>
+          <div>
+            <button>Add</button>
+          </div>
+          <div>
             <!-- Funding source selection drop down menu -->
-            <label for="selFundSource">Funding Source:</label>
+            <label for="selFundSource">Funding Source:</label> <br />
 
             <select id="selFundSource">
               <option selected>All</option>
             </select>
-
-          </div> <!-- Close inner div -->
+          </div>
 
           <div>
-            <button>Start</button>
+            <button>Add</button>
           </div>
 
           <div>
             <button>Clear</button>
           </div>
-
         </form>
-
       </aside>
-
       <main>
-        <!-- JS will draw things here -->
       </main>
-
-    </div> <!-- Close outer div -->
-
+    </div>
     <script src="jquery-3.3.1.js"></script>
     <script src="jquery.csv.js"></script>
     <script src="http://d3js.org/d3.v3.min.js"></script>
