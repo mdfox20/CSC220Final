@@ -1,3 +1,29 @@
+$(document).ready(function() {
+    // all custom jQuery will go here
+	  $.getJSON("nodes.json", function(data) {
+      // console.log(data);
+		let polvals = [];
+    let fundvals = [];
+    $.each(data, function(key,val) {
+      if (this.type == "politician") {
+        polvals.push(this.name);
+      }
+      if (this.type == "funding source") {
+        fundvals.push(this.name);
+      }
+    });
+
+		let selPol = $("selPol");
+		$.each(polvals, function(index, value) {
+			$("#selPol").append("<option>" + value + "</option>");
+		});
+    let selFundSource = $("selFundSource");
+    $.each(fundvals, function(index, value) {
+      $("#selFundSource").append("<option>" + value + "</option>");
+    });
+
+	});
+});
 
 function loadData() {
 
