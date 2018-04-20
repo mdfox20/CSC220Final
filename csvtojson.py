@@ -1,8 +1,10 @@
 import csv
 import json
 
+fname = "paul_ryan.csv"
+
 # Remove unneccesary columns from csv
-with open('paul_ryan.csv','r') as source:
+with open(fname,'r') as source:
     reader = csv.reader(source)
     with open('paul_ryan_fixed.csv','w') as result:
       writer = csv.writer(result)
@@ -21,25 +23,15 @@ next(reader);
 
 with open('nodes.json', 'w') as jsonfile:
   jsonfile.write("[")
+
+  name = fname.replace(".csv", "").replace("_", " ").title()
+  json.dump({"name": name, "type": "politician"}, jsonfile)
+  
   for row in reader:
+    jsonfile.write(',\n')
     json.dump(row, jsonfile)
-    jsonfile.write(', \n')
-  jsonfile.write("]")
+  
+  jsonfile.write("\n]")
 
   csvfile.close()
   jsonfile.close()
-
-# Remove trailing comma
-with open('nodes.json', 'r') as fwithcomma:
-  strcomma = fwithcomma.read()
-  i = strcomma.rfind(",")
-  print(i)
-  strnocomma = strcomma[:i] + strcomma[i+1:]
-  print(strnocomma)
-  with open('nodes.json', 'w') as fnocomma:
-    fnocomma.write(strnocomma)
-
-    fwithcomma.close()
-    fnocomma.close()
-    
-  
