@@ -8,7 +8,7 @@ $(document).ready(function() {
       if (this.type == "politician") {
         polvals.push(this.name);
       }
-      if (this.type == "funding source") {
+      if (this.type == "funding head") {
         fundvals.push(this.name);
       }
     });
@@ -17,9 +17,9 @@ $(document).ready(function() {
 		$.each(polvals, function(index, value) {
 			$("#selPol").append("<option>" + value + "</option>");
 		});
-    let selFundSource = $("selFundSource");
+    let selFundHead = $("selFundHead");
     $.each(fundvals, function(index, value) {
-      $("#selFundSource").append("<option>" + value + "</option>");
+      $("#selFundHead").append("<option>" + value + "</option>");
     });
 
 	});
@@ -65,7 +65,7 @@ function graphics() {
 
   // Grab the dropdown menu elements from HTML
   // let selectPol = document.querySelector('#selPol');
-  // let selectFundSource = document.querySelector('#selFundSource');
+  // let selectFundHead = document.querySelector('#selFundHead');
   //
   // // Loop through the nodes and add to appropriate menu
   // // Based on https://stackoverflow.com/questions/17730621/how-to-dynamically-add-options-to-an-existing-select-in-vanilla-javascript
@@ -73,7 +73,7 @@ function graphics() {
   //   if (nodes[i].type === "Politician") {
   //     selectPol.options[selectPol.options.length] = new Option(nodes[i].name, nodes[i].name);
   //   } else { // Otherwise it's a donor node
-  //     selectFundSource.options[selectFundSource.options.length] = new Option(nodes[i].name, nodes[i].name);
+  //     selectFundHead.options[selectFundHead.options.length] = new Option(nodes[i].name, nodes[i].name);
   //   }
   // }
 
@@ -163,12 +163,12 @@ function graphics() {
       // listen for dragging
       let dragSvg = d3.behavior.zoom()
             .on("zoom", function(){
-              if (d3.event.sourceEvent.shiftKey){
-                // TODO  the internal d3 state is still changing
-                return false;
-              } else{
+              // if (d3.event.headEvent.shiftKey){
+              //   // TODO  the internal d3 state is still changing
+              //   return false;
+              // } else{
                 thisGraph.zoomed.call(thisGraph);
-              }
+              // }
               return true;
             })
             .on("zoomstart", function(){
@@ -176,7 +176,7 @@ function graphics() {
               if (ael){
                 ael.blur();
               }
-              if (!d3.event.sourceEvent.shiftKey) d3.select('body').style("cursor", "move");
+              //if (!d3.event.headEvent.shiftKey) d3.select('body').style("cursor", "move");
             })
             .on("zoomend", function(){
               d3.select('body').style("cursor", "auto");
@@ -191,7 +191,7 @@ function graphics() {
       d3.select("#download-input").on("click", function(){
         let saveEdges = [];
         thisGraph.edges.forEach(function(val, i){
-          saveEdges.push({source: val.source.id, target: val.target.id});
+          saveEdges.push({head: val.head.id, tail: val.tail.id});
         });
         let blob = new Blob([window.JSON.stringify({"nodes": thisGraph.nodes, "edges": saveEdges})], {type: "text/plain;charset=utf-8"});
         saveAs(blob, "mydag.json");
@@ -217,8 +217,8 @@ function graphics() {
               thisGraph.setIdCt(jsonObj.nodes.length + 1);
               let newEdges = jsonObj.edges;
               newEdges.forEach(function(e, i){
-                newEdges[i] = {source: thisGraph.nodes.filter(function(n){return n.id == e.source;})[0],
-                            target: thisGraph.nodes.filter(function(n){return n.id == e.target;})[0]};
+                newEdges[i] = {head: thisGraph.nodes.filter(function(n){return n.id == e.head;})[0],
+                            tail: thisGraph.nodes.filter(function(n){return n.id == e.tail;})[0]};
               });
               thisGraph.edges = newEdges;
               thisGraph.updateGraph();
@@ -294,8 +294,8 @@ function graphics() {
 
 
     /* insert svg line breaks: taken from http://stackoverflow.com/questions/13241475/how-do-i-include-newlines-in-labels-in-d3-charts */
-    GraphCreator.prototype.insertTitleLinebreaks = function (gEl, title) {
-      let words = title.split(/\s+/g),
+    GraphCreator.prototype.insertNameLinebreaks = function (gEl, name) {
+      let words = name.split(/\s+/g),
           nwords = words.length;
       let el = gEl.append("text")
             .attr("text-anchor","middle")
@@ -313,7 +313,7 @@ function graphics() {
     GraphCreator.prototype.spliceLinksForNode = function(node) {
       let thisGraph = this,
           toSplice = thisGraph.edges.filter(function(l) {
-        return (l.source === node || l.target === node);
+        return (l.head === node || l.tail === node);
       });
       toSplice.map(function(l) {
         thisGraph.edges.splice(thisGraph.edges.indexOf(l), 1);
@@ -395,12 +395,12 @@ function graphics() {
 
       if (mouseDownNode !== d){
         // we're in a different node: create new edge for mousedown edge and add to graph
-        let newEdge = {source: mouseDownNode, target: d};
+        let newEdge = {head: mouseDownNode, tail: d};
         let filtRes = thisGraph.paths.filter(function(d){
-          if (d.source === newEdge.target && d.target === newEdge.source){
+          if (d.head === newEdge.tail && d.tail === newEdge.head){
             thisGraph.edges.splice(thisGraph.edges.indexOf(d), 1);
           }
-          return d.source === newEdge.source && d.target === newEdge.target;
+          return d.head === newEdge.head && d.tail === newEdge.tail;
         });
         if (!filtRes[0].length){
           thisGraph.edges.push(newEdge);
@@ -444,7 +444,7 @@ function graphics() {
       } else if (state.graphMouseDown && d3.event.shiftKey){
         // clicked not dragged from svg
         let xycoords = d3.mouse(thisGraph.svgG.node()),
-            d = {id: thisGraph.idct++, title: "new concept", x: xycoords[0], y: xycoords[1]};
+            d = {id: thisGraph.idct++, name: "new concept", x: xycoords[0], y: xycoords[1]};
         thisGraph.nodes.push(d);
         thisGraph.updateGraph();
       } else if (state.shiftNodeDrag){
@@ -497,7 +497,7 @@ function graphics() {
           state = thisGraph.state;
 
       thisGraph.paths = thisGraph.paths.data(thisGraph.edges, function(d){
-        return String(d.source.id) + "+" + String(d.target.id);
+        return String(d.head.id) + "+" + String(d.tail.id);
       });
       let paths = thisGraph.paths;
       // update existing paths
@@ -506,7 +506,7 @@ function graphics() {
           return d === state.selectedEdge;
         })
         .attr("d", function(d){
-          return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
+          return "M" + d.head.x + "," + d.head.y + "L" + d.tail.x + "," + d.tail.y;
         });
 
       // add new paths
@@ -515,7 +515,7 @@ function graphics() {
         .style('marker-end','url(#end-arrow)')
         .classed("link", true)
         .attr("d", function(d){
-          return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
+          return "M" + d.head.x + "," + d.head.y + "L" + d.tail.x + "," + d.tail.y;
         })
         .on("mousedown", function(d){
           thisGraph.pathMouseDown.call(thisGraph, d3.select(this), d);
@@ -558,7 +558,7 @@ function graphics() {
         .attr("r", String(consts.nodeRadius));
 
       newGs.each(function(d){
-        thisGraph.insertTitleLinebreaks(d3.select(this), d.title);
+        thisGraph.insertNameLinebreaks(d3.select(this), d.name);
       });
 
       // remove old nodes
@@ -598,9 +598,9 @@ function graphics() {
         yLoc = 100;
 
     // initial node data
-    let nodes = [{title: "new concept", id: 0, x: xLoc, y: yLoc},
-                 {title: "new concept", id: 1, x: xLoc, y: yLoc + 200}, {title: "new concept", id: 2, x: xLoc, y: yLoc + 300}];
-    let edges = [{source: nodes[1], target: nodes[0]}];
+    let nodes = [{name: "1", id: 0, x: xLoc, y: yLoc},
+                 {name: "2", id: 1, x: xLoc, y: yLoc + 200}, {name: "3", id: 2, x: xLoc, y: yLoc + 300}];
+    let edges = [{head: nodes[1], tail: nodes[0]}];
 
 
     /** MAIN SVG **/
@@ -614,104 +614,3 @@ function graphics() {
 }
 
 graphics();
-
-// // Bring in data from CSV and organize into nodes list
-// function loadInData() {
-//   // All file names
-//   let nameArr = ["paul_ryan"];
-//
-//   // All politician objects (extracted from files)
-//   let politicians = [];
-//
-//   // All funding sources (extracted from Politician objects)
-//   let fundingSources = [];
-//
-//   // All nodes (both politicians and funding sources)
-//   let nodes = [];
-//
-//   // Loop through list of files, open each one, and process each one
-//   for (let i = 0; i < nameArr.length; i++){
-//     let fileName = nameArr[i] + ".csv";
-//     $(document).ready(function() { // This code block from https://stackoverflow.com/questions/7431268/how-to-read-data-from-csv-file-using-javascript
-//         $.ajax({
-//             type: "GET",
-//             url: fileName,
-//             dataType: "text",
-//             success: function(fileName) {processData(fileName, nameArr[i]);}
-//          });
-//     });
-//   }
-//
-//   // Process the data for one politician
-//   function processData(csv_text, person_name) { // Based off code from https://stackoverflow.com/questions/7431268/how-to-read-data-from-csv-file-using-javascript/12289296#12289296
-//
-//     // Converts CSV string into array of objects
-//     let arrLines = $.csv.toObjects(csv_text);
-//
-//     // Build map of companies -> amount donated
-//     let map = new Map();
-//     for (let i = 0; i < arrLines.length; i++){
-//       map.set(arrLines[i].ultorg, arrLines[i].total);
-//     }
-//
-//     // Add new Politician object to list, using their name and contribution map
-//     politicians.push(new Politician(person_name, map));
-//   }
-//
-//   //Constructor for politician node
-//   function Politician(name, fundingMap) {
-//     this.name = name;
-//     this.fundingMap = findFundingSource(this, fundingMap); //map of funding sources (key) and amount of $ given (value)
-//     nodes.push(this);
-//   }
-//
-//   //Constructor for funding source node
-//   function FundingSource(name) {
-//     this.name = name;
-//     this.politiciansList = []; //list of politicians funded
-//
-//     fundingSources.push(this);
-//     nodes.push(this);
-//
-//     //adds a politician to the funding source's list of politicians funded
-//     this.addPolitician = function(politician) {
-//       this.politiciansList.push(politician);
-//     }
-//   }
-//
-//   //Given a politician, identify if all funding source objects exist yet, and if not, create and add them to master list
-//   function findFundingSource(politician, fundingMap) {
-//     //loop through current funding map
-//     let map = fundingMap.keys();
-//     for (let source of map) {
-//       console.log("source: ", source);
-//       let found = false; //variable to keep track of if funding source object found
-//       //look through list of all funding source objects
-//       for (let fs of fundingSources) {
-//         //console.log(fs);
-//         //if funding source object already exists for source, update its politician list
-//         if (source == fs.name) {
-//           found = true;
-//           fs.addPolitician(politician);
-//           fundingMap.set(fs, fundingMap.get(source)); //update map so key is funding source object
-//           //console.log(fundingMap);
-//
-//           //return fundingMap;
-//         }
-//       }
-//       //if funding source object doesn't exist for source, make one
-//       if (found == false) {
-//         //console.log("found == false");
-//         let fs = new FundingSource(source);
-//         fs.addPolitician(politician);
-//         fundingMap.set(fs, fundingMap.get(source)); //update map so key is funding source object
-//         //console.log("map: ", fundingMap);
-//
-//         //return fundingMap;
-//       }
-//     }
-//     //console.log(fundingMap);
-//     return fundingMap;
-//   }
-//   graphics();
-// }

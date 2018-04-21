@@ -6,6 +6,7 @@ img {
 }
 fieldset {
   padding: 5px;
+  padding-left: 100px;
   width: 100%;
 }
 div {
@@ -17,11 +18,12 @@ select { /* from https://www.w3schools.com/css/css_form.asp */
     padding: 8px 10px;
     border: none;
     border-radius: 4px;
-    background-color: #d3d3d3;
+    color: white;
+    background-color: #691c14;
 
 }
 button { /* from https://www.w3schools.com/css/css_form.asp */
-  background-color: #4CAF50;
+  background-color: #50a7b2;
   border: none;
   color: white;
   padding: 8px 10px;
@@ -71,6 +73,8 @@ body{
 #toolbox input:hover{
   opacity: 1;
   cursor: pointer;
+  color: white;
+  background-color: #691c14;
 }
 
 #hidden-file-upload{
@@ -96,7 +100,7 @@ g.conceptG circle{
 }
 
 g.conceptG:hover circle{
-  fill: rgb(200, 238, 241);
+  fill: #50a7b2;
 }
 
 g.selected circle{
@@ -105,7 +109,8 @@ g.selected circle{
 
 
 path.link {
-  fill: none;
+  color: #691c14;
+  fill: #691c14;
   stroke: #333;
   stroke-width: 6px;
   cursor: default;
