@@ -1,6 +1,7 @@
 import csv
 import json
 import glob
+import os
 
 # Get all CSV files
 fnames = glob.glob("*.csv")
@@ -14,7 +15,7 @@ edgesjson = open('edges.json', 'w')
 edgesjson.write("[")
 
 # Loop through all CSV files
-for fname in fnames: 
+for fname in fnames:
   # Remove unneccesary columns from csv and add additional funding source column
   with open(fname,'r') as allcols:
       reader = csv.reader(allcols)
@@ -22,7 +23,7 @@ for fname in fnames:
         writer = csv.writer(finalcols)
         for row in reader:
           writer.writerow( (row[3], row[4], "funding source"))
-          
+
         finalcols.close()
         allcols.close()
 
@@ -35,7 +36,7 @@ for fname in fnames:
 
   name = fname.replace(".csv", "").replace("_", " ").title()
   json.dump({"name": name, "type": "politician"}, nodesjson) # Add politician node
-  
+
   for row in reader:
     nodesjson.write(',\n')
     json.dump(row, nodesjson)
@@ -45,9 +46,10 @@ for fname in fnames:
 
   if (fname != fnames[len(fnames)-1]):
     nodesjson.write(',\n')
-    
+
   csvfile.close()
-  
+  os.remove(f'{fname.replace(".csv", "")}_fixed.csv')
+
 nodesjson.write("\n]")
 nodesjson.close()
 
@@ -61,4 +63,3 @@ edgesjson = open('edges.json', 'w')
 edgesjson.write(edgesstr[:i] + edgesstr[i+1:])
 
 edgesjson.close()
-
