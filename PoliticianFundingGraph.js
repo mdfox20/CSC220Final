@@ -103,7 +103,7 @@ function graphics() {
       // define arrow markers for graph links
       let defs = svg.append('svg:defs');
       defs.append('svg:marker')
-        .attr('id', 'end-arrow')
+        .attr('name', 'end-arrow')
         .attr('viewBox', '0 -5 10 10')
         .attr('refX', "32")
         .attr('markerWidth', 3.5)
@@ -114,7 +114,7 @@ function graphics() {
 
       // define arrow markers for leading arrow
       defs.append('svg:marker')
-        .attr('id', 'mark-end-arrow')
+        .attr('name', 'mark-end-arrow')
         .attr('viewBox', '0 -5 10 10')
         .attr('refX', 7)
         .attr('markerWidth', 3.5)
@@ -176,7 +176,7 @@ function graphics() {
               if (ael){
                 ael.blur();
               }
-              //if (!d3.event.headEvent.shiftKey) d3.select('body').style("cursor", "move");
+              d3.select('body').style("cursor", "move");
             })
             .on("zoomend", function(){
               d3.select('body').style("cursor", "auto");
@@ -191,7 +191,7 @@ function graphics() {
       d3.select("#download-input").on("click", function(){
         let saveEdges = [];
         thisGraph.edges.forEach(function(val, i){
-          saveEdges.push({head: val.head.id, tail: val.tail.id});
+          saveEdges.push({head: val.head.name, tail: val.tail.name});
         });
         let blob = new Blob([window.JSON.stringify({"nodes": thisGraph.nodes, "edges": saveEdges})], {type: "text/plain;charset=utf-8"});
         saveAs(blob, "mydag.json");
@@ -217,8 +217,8 @@ function graphics() {
               thisGraph.setIdCt(jsonObj.nodes.length + 1);
               let newEdges = jsonObj.edges;
               newEdges.forEach(function(e, i){
-                newEdges[i] = {head: thisGraph.nodes.filter(function(n){return n.id == e.head;})[0],
-                            tail: thisGraph.nodes.filter(function(n){return n.id == e.tail;})[0]};
+                newEdges[i] = {head: thisGraph.nodes.filter(function(n){return n.name == e.head;})[0],
+                            tail: thisGraph.nodes.filter(function(n){return n.name == e.tail;})[0]};
               });
               thisGraph.edges = newEdges;
               thisGraph.updateGraph();
@@ -341,7 +341,7 @@ function graphics() {
     GraphCreator.prototype.removeSelectFromNode = function(){
       let thisGraph = this;
       thisGraph.circles.filter(function(cd){
-        return cd.id === thisGraph.state.selectedNode.id;
+        return cd.name === thisGraph.state.selectedNode.name;
       }).classed(thisGraph.consts.selectedClass, false);
       thisGraph.state.selectedNode = null;
     };
@@ -417,7 +417,7 @@ function graphics() {
             }
             let prevNode = state.selectedNode;
 
-            if (!prevNode || prevNode.id !== d.id){
+            if (!prevNode || prevNode.name !== d.name){
               thisGraph.replaceSelectNode(d3node, d);
             } else{
               thisGraph.removeSelectFromNode();
@@ -441,10 +441,10 @@ function graphics() {
       if (state.justScaleTransGraph) {
         // dragged not clicked
         state.justScaleTransGraph = false;
-      } else if (state.graphMouseDown && d3.event.shiftKey){
+      } else if (state.graphMouseDown && d3.event.shiftKey){ //ADDS NODE, CHANGE TO HTML SELECTION
         // clicked not dragged from svg
         let xycoords = d3.mouse(thisGraph.svgG.node()),
-            d = {id: thisGraph.idct++, name: "new concept", x: xycoords[0], y: xycoords[1]};
+            d = {name: "new concept", x: xycoords[0], y: xycoords[1]}; //CHANGE TO CHOOSING NODE WITH MATCHING NAME
         thisGraph.nodes.push(d);
         thisGraph.updateGraph();
       } else if (state.shiftNodeDrag){
@@ -497,7 +497,7 @@ function graphics() {
           state = thisGraph.state;
 
       thisGraph.paths = thisGraph.paths.data(thisGraph.edges, function(d){
-        return String(d.head.id) + "+" + String(d.tail.id);
+        return String(d.head.name) + "+" + String(d.tail.name);
       });
       let paths = thisGraph.paths;
       // update existing paths
@@ -529,7 +529,7 @@ function graphics() {
       paths.exit().remove();
 
       // update existing nodes
-      thisGraph.circles = thisGraph.circles.data(thisGraph.nodes, function(d){ return d.id;});
+      thisGraph.circles = thisGraph.circles.data(thisGraph.nodes, function(d){ return d.name;});
       thisGraph.circles.attr("transform", function(d){return "translate(" + d.x + "," + d.y + ")";});
 
       // add new nodes
@@ -598,9 +598,9 @@ function graphics() {
         yLoc = 100;
 
     // initial node data
-    let nodes = [{name: "1", id: 0, x: xLoc, y: yLoc},
-                 {name: "2", id: 1, x: xLoc, y: yLoc + 200}, {name: "3", id: 2, x: xLoc, y: yLoc + 300}];
-    let edges = [{head: nodes[1], tail: nodes[0]}];
+    let nodes = [{name: "1", x: xLoc, y: yLoc},
+                 {name: "2", x: xLoc, y: yLoc + 200}, {name: "3", x: xLoc, y: yLoc + 300}];
+    let edges = []; // No edges displayed to begin with
 
 
     /** MAIN SVG **/
