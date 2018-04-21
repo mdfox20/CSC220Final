@@ -52,5 +52,13 @@ nodesjson.write("\n]")
 nodesjson.close()
 
 edgesjson.write("]")
+
+edgesjson = open('edges.json', 'r')
+edgesstr = edgesjson.read()
+i = edgesstr.rfind(",")
+
+edgesjson = open('edges.json', 'w')
+edgesjson.write(edgesstr[:i] + edgesstr[i+1:])
+
 edgesjson.close()
 
