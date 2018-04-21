@@ -25,7 +25,8 @@ $(document).ready(function() {
 	});
 });
 
-function loadData() {
+
+// function loadData() {
 
   // (This code block taken from Mozilla search tutorial)
 
@@ -51,7 +52,7 @@ function loadData() {
   //   }
   // });
 
-}
+// }
 
 
 function graphics() {
@@ -79,6 +80,13 @@ function graphics() {
 
   document.onload = (function(d3, saveAs, Blob, undefined){
     "use strict";
+
+    // // grab button elements from html
+    // let addPol = document.querySelector('#addPol');
+    // let addFundSource = document.querySelector('#addFundSource');
+    //
+    // addPol.onclick = GraphCreator.prototype.svgMouseUp;
+    // addFundSource.onclick = GraphCreator.prototype.svgMouseUp;
 
     // define graphcreator object
     let GraphCreator = function(svg, nodes, edges){
@@ -599,7 +607,7 @@ function graphics() {
 
     // initial node data
     let nodes = [{name: "1", x: xLoc, y: yLoc},
-                 {name: "2", x: xLoc, y: yLoc + 200}, {name: "3", x: xLoc, y: yLoc + 300}];
+                  {name: "2", x: xLoc, y: yLoc + 200}, {name: "3", x: xLoc, y: yLoc + 300}];
     let edges = []; // No edges displayed to begin with
 
 
