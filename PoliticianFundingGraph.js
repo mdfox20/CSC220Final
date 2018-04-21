@@ -8,7 +8,7 @@ $(document).ready(function() {
       if (this.type == "politician") {
         polvals.push(this.name);
       }
-      if (this.type == "funding head") {
+      if (this.type == "funding source") {
         fundvals.push(this.name);
       }
     });
@@ -17,9 +17,9 @@ $(document).ready(function() {
 		$.each(polvals, function(index, value) {
 			$("#selPol").append("<option>" + value + "</option>");
 		});
-    let selFundHead = $("selFundHead");
+    let selFundHead = $("selFundSource");
     $.each(fundvals, function(index, value) {
-      $("#selFundHead").append("<option>" + value + "</option>");
+      $("#selFundSource").append("<option>" + value + "</option>");
     });
 
 	});
