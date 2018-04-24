@@ -532,10 +532,9 @@ function graphics() {
 
       polNode.x = Math.random() * (width - 10) + 10;
       polNode.y = Math.random() * (height - 10) + 10;
-      console.log("selected politician node: ", polNode)
 
 			nodes.push(polNode);
-			console.log(nodes);
+			updateEdges();
 			graph.updateGraph();
     };
 
@@ -554,10 +553,9 @@ function graphics() {
 
 			fundNode.x = Math.random() * (width - 10) + 10;
 			fundNode.y = Math.random() * (height - 10) + 10;
-      console.log("selected funding node: ", fundNode)
 
 			nodes.push(fundNode);
-			console.log(nodes);
+			updateEdges();
 			graph.updateGraph();
     }
 
@@ -565,6 +563,28 @@ function graphics() {
 			nodes.length = 0;
 			edges.length = 0;
 			graph.updateGraph();
+		}
+
+		function updateEdges() {
+			let allEdges = fetch("edges.json").then(function(response){
+	      if(response.ok){
+	        response.json().then(function(json){
+						console.log("json: ", json);
+	          return json;
+	        });
+	      }
+	    });
+
+			console.log(allEdges);
+
+			// loop through nodes and add edges as appropriate
+			for (let i = 0; i < nodes.length; i++) {
+				for (let j = 0; j < allEdges.length; i++) {
+					if ((allEdges[j].head == nodes[i].name) || (allEdges[j].tail == nodes[i].name)) {
+						edges.push(allEdges[j])
+					}
+				}
+			}
 		}
 
     /**** MAIN ****/
@@ -583,7 +603,6 @@ function graphics() {
     // initial node data
     let nodes = [];
     let edges = []; // No edges displayed to begin with
-
 
     /** MAIN SVG **/
     let svg = d3.select("body").append("svg")
