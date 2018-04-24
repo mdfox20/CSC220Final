@@ -478,13 +478,12 @@ function graphics() {
       svg.attr("width", x).attr("height", y);
     };
 
-
-
-    /**** MAIN ****/
+		/** HTML ELEMENTS AND LISTENERS **/
 
     // grab button elements from html
     let addPol = document.querySelector('#addPol');
     let addFundSource = document.querySelector('#addFundSource');
+		let clear = document.querySelector('#clear');
 
     let polObjs = [];
     let fundObjs = [];
@@ -553,9 +552,17 @@ function graphics() {
 			graph.updateGraph();
     }
 
+		clear.onclick = function() {
+			nodes.length = 0;
+			edges.length = 0;
+			graph.updateGraph();
+		}
+
+    /**** MAIN ****/
+
     // warn the user when leaving
     window.onbeforeunload = function(){
-      return "Make sure to save your graph locally before leaving :-)";
+    	return "Make sure to save your graph locally before leaving :-)";
     };
 
     let docEl = document.documentElement,
