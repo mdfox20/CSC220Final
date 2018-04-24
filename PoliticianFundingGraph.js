@@ -543,14 +543,15 @@ function graphics() {
       let polObjs = [];
 
       // get all politician nodes from JSON of all nodes and push into array
-      $.getJSON("nodes.json", function(data) {
-        $.each(data, function(key,val) {
-          if (this.type == "politician") {
-            polObjs.push(this);
-          }
-        });
-      });
-      return polObjs;
+      fetch("nodes.json").then(
+         function(data) {
+           $.each(data, function(key,val) {
+             if (this.type == "politician") {
+               polObjs.push(this);
+             }
+           });
+          return polObjs;
+         });
     }
 
     // Return array of all funding source nodes
@@ -558,14 +559,15 @@ function graphics() {
       let fundObjs = [];
 
       // get all funding source nodes from JSON of all nodes and push into array
-      $.getJSON("nodes.json", function(data) {
-        $.each(data, function(key,val) {
-          if (this.type == "funding source") {
-            fundObjs.push(this);
-          }
-        });
-      });
-      return fundObjs;
+      fetch("nodes.json").then(
+         function(data) {
+           $.each(data, function(key,val) {
+             if (this.type == "funding source") {
+               fundObjs.push(this);
+             }
+           });
+          return fundObjs;
+         });
     }
 
 
@@ -580,6 +582,7 @@ function graphics() {
 
       // get politician node with name matching html selected name
       let polObjs = getPolObjs();
+      console.log("type of polObjs: ", typeof polObjs);
       console.log("polObjs: ", polObjs);
       let polNode;
 
