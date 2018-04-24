@@ -1,24 +1,24 @@
 $(document).ready(function() {
-    // all custom jQuery will go here
-	  $.getJSON("nodes.json", function(data) {
-      // console.log(data);
-		let polvals = [];
-    let fundvals = [];
+  // all custom jQuery will go here
+	$.getJSON("nodes.json", function(data) {
+    // console.log(data);
+		let polNames = [];
+    let fundNames = [];
     $.each(data, function(key,val) {
       if (this.type == "politician") {
-        polvals.push(this.name);
+        polNames.push(this.name);
       }
       if (this.type == "funding source") {
-        fundvals.push(this.name);
+        fundNames.push(this.name);
       }
     });
 
 		let selPol = $("selPol");
-		$.each(polvals, function(index, value) {
+		$.each(polNames, function(index, value) {
 			$("#selPol").append("<option>" + value + "</option>");
 		});
     let selFundHead = $("selFundSource");
-    $.each(fundvals, function(index, value) {
+    $.each(fundNames, function(index, value) {
       $("#selFundSource").append("<option>" + value + "</option>");
     });
 
@@ -30,13 +30,6 @@ function graphics() {
 
   document.onload = (function(d3, saveAs, Blob, undefined){
     "use strict";
-
-    // // grab button elements from html
-    // let addPol = document.querySelector('#addPol');
-    // let addFundSource = document.querySelector('#addFundSource');
-    //
-    // addPol.onclick = GraphCreator.prototype.svgMouseUp;
-    // addFundSource.onclick = GraphCreator.prototype.svgMouseUp;
 
     // define graphcreator object
     let GraphCreator = function(svg, nodes, edges){
@@ -109,12 +102,12 @@ function graphics() {
             });
 
       // listen for key events
-      d3.select(window).on("keydown", function(){
-        thisGraph.svgKeyDown.call(thisGraph);
-      })
-      .on("keyup", function(){
-        thisGraph.svgKeyUp.call(thisGraph);
-      });
+      // d3.select(window).on("keydown", function(){
+      //   thisGraph.svgKeyDown.call(thisGraph);
+      // })
+      // .on("keyup", function(){
+      //   thisGraph.svgKeyUp.call(thisGraph);
+      // });
       svg.on("mousedown", function(d){thisGraph.svgMouseDown.call(thisGraph, d);});
       svg.on("mouseup", function(d){thisGraph.svgMouseUp.call(thisGraph, d);});
 
@@ -540,6 +533,84 @@ function graphics() {
 
 
     /**** MAIN ****/
+
+    // grab button elements from html
+    let addPol = document.querySelector('#addPol');
+    let addFundSource = document.querySelector('#addFundSource');
+
+    // Return array of all politican nodes
+    function getPolObjs() {
+      let polObjs = [];
+
+      // get all politician nodes from JSON of all nodes and push into array
+      $.getJSON("nodes.json", function(data) {
+        $.each(data, function(key,val) {
+          if (this.type == "politician") {
+            polObjs.push(this);
+          }
+        });
+      });
+      return polObjs;
+    }
+
+    // Return array of all funding source nodes
+    function getFundObjs() {
+      let fundObjs = [];
+
+      // get all funding source nodes from JSON of all nodes and push into array
+      $.getJSON("nodes.json", function(data) {
+        $.each(data, function(key,val) {
+          if (this.type == "funding source") {
+            fundObjs.push(this);
+          }
+        });
+      });
+      return fundObjs;
+    }
+
+
+    // grab drop down menu selected elements from html when add buttons clicked
+    let selPol;
+    let selFund;
+
+    // when add button for politicans clicked
+    addPol.onclick = function(){
+      // get name of politician from drop down menu
+      selPol = document.getElementById("selPol").value;
+
+      // get politician node with name matching html selected name
+      let polObjs = getPolObjs();
+      console.log("polObjs: ", polObjs);
+      let polNode;
+
+      for (pol in polObjs) {
+        console.log("pol: ", pol);
+        if (pol.name == selPol) {
+          polNode = pol;
+        }
+      }
+
+      //polNode.x = 300;
+      //polNode.y = 300;
+      console.log("selected politician node: ", polNode)
+    };
+
+    // when add button for funding sources clicked
+    addFundSource.onclick = function(){
+      // get name of funding source from drop down menu
+      let selFund = document.getElementById("selFundSource").value;
+
+      // get funding source node with name matching html selected name
+      let fundObjs = getFundObjs();
+
+      let fsNode = fundObjs.filter(function(obj) {
+        return obj.name == selFund;
+      });
+      //fsNode.x = 400;
+      //fsNode.y = 400;
+      console.log("selected funding source node: ", fsNode)
+    };
+
 
     // warn the user when leaving
     window.onbeforeunload = function(){
