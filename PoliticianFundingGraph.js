@@ -530,8 +530,8 @@ function graphics() {
         }
       }
 
-      polNode.x = 300;
-      polNode.y = 300;
+      polNode.x = Math.random() * (width - 10) + 10;
+      polNode.y = Math.random() * (height - 10) + 10;
       console.log("selected politician node: ", polNode)
 
 			nodes.push(polNode);
@@ -552,8 +552,8 @@ function graphics() {
         }
       }
 
-			fundNode.x = 300;
-			fundNode.y = 300;
+			fundNode.x = Math.random() * (width - 10) + 10;
+			fundNode.y = Math.random() * (height - 10) + 10;
       console.log("selected funding node: ", fundNode)
 
 			nodes.push(fundNode);
@@ -577,11 +577,8 @@ function graphics() {
     let docEl = document.documentElement,
         bodyEl = document.getElementsByTagName('body')[0];
 
-    let width = window.innerWidth || docEl.clientWidth || bodyEl.clientWidth,
+    var width = window.innerWidth || docEl.clientWidth || bodyEl.clientWidth,
         height =  window.innerHeight|| docEl.clientHeight|| bodyEl.clientHeight;
-
-    let xLoc = width/2 - 25,
-        yLoc = 100;
 
     // initial node data
     let nodes = [];
