@@ -138,53 +138,6 @@ function graphics() {
       // listen for resize
       window.onresize = function(){thisGraph.updateWindow(svg);};
 
-      // handle download data
-      d3.select("#download-input").on("click", function(){
-        let saveEdges = [];
-        thisGraph.edges.forEach(function(val, i){
-          saveEdges.push({head: val.head.name, tail: val.tail.name});
-        });
-        let blob = new Blob([window.JSON.stringify({"nodes": thisGraph.nodes, "edges": saveEdges})], {type: "text/plain;charset=utf-8"});
-        saveAs(blob, "mydag.json");
-      });
-
-
-      // handle uploaded data
-      d3.select("#upload-input").on("click", function(){
-        document.getElementById("hidden-file-upload").click();
-      });
-      d3.select("#hidden-file-upload").on("change", function(){
-        if (window.File && window.FileReader && window.FileList && window.Blob) {
-          let uploadFile = this.files[0];
-          let filereader = new window.FileReader();
-
-          filereader.onload = function(){
-            let txtRes = filereader.result;
-            // TODO better error handling
-            try{
-              let jsonObj = JSON.parse(txtRes);
-              thisGraph.deleteGraph(true);
-              thisGraph.nodes = jsonObj.nodes;
-              thisGraph.setIdCt(jsonObj.nodes.length + 1);
-              let newEdges = jsonObj.edges;
-              newEdges.forEach(function(e, i){
-                newEdges[i] = {head: thisGraph.nodes.filter(function(n){return n.name == e.head;})[0],
-                            tail: thisGraph.nodes.filter(function(n){return n.name == e.tail;})[0]};
-              });
-              thisGraph.edges = newEdges;
-              thisGraph.updateGraph();
-            }catch(err){
-              window.alert("Error parsing uploaded file\nerror message: " + err.message);
-              return;
-            }
-          };
-          filereader.readAsText(uploadFile);
-
-        } else {
-          alert("Your browser won't let you save this graph -- try upgrading your browser to IE 10+ or Chrome or Firefox.");
-        }
-
-      });
 
       // handle delete graph
       d3.select("#delete-graph").on("click", function(){
@@ -642,7 +595,7 @@ function graphics() {
     let graph = new GraphCreator(svg, nodes, edges);
         graph.setIdCt(2);
     graph.updateGraph();
-  })(window.d3, window.saveAs, window.Blob);
+  } )(window.d3, window.saveAs, window.Blob);
 }
 
 graphics();
