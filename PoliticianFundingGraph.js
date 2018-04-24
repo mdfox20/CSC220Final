@@ -486,38 +486,23 @@ function graphics() {
     let addPol = document.querySelector('#addPol');
     let addFundSource = document.querySelector('#addFundSource');
 
-    // Return array of all politican nodes
-    function getPolObjs() {
-      let polObjs = [];
+    let polObjs = [];
+    let fundObjs = [];
 
-      // get all politician nodes from JSON of all nodes and push into array
-      fetch("nodes.json").then(
-         function(data) {
-           $.each(data, function(key,val) {
-             if (this.type == "politician") {
-               polObjs.push(this);
-             }
-           });
-          return polObjs;
-         });
-    }
-
-    // Return array of all funding source nodes
-    function getFundObjs() {
-      let fundObjs = [];
-
-      // get all funding source nodes from JSON of all nodes and push into array
-      fetch("nodes.json").then(
-         function(data) {
-           $.each(data, function(key,val) {
-             if (this.type == "funding source") {
-               fundObjs.push(this);
-             }
-           });
-          return fundObjs;
-         });
-    }
-
+    // get all politician nodes from JSON of all nodes and push into array
+    fetch("nodes.json").then(function(response){
+      if(response.ok){
+        response.json().then(function(json){
+          for (let i = 0; i < json.length; i++) {
+            if (json[i].type == "politician"){
+              polObjs.push(json[i]);
+            } else {
+              fundObjs.push(json[i]);
+            }
+          }
+        });
+      }
+    });
 
     // grab drop down menu selected elements from html when add buttons clicked
     let selPol;
@@ -529,15 +514,17 @@ function graphics() {
       selPol = document.getElementById("selPol").value;
 
       // get politician node with name matching html selected name
-      let polObjs = getPolObjs();
+      // let polObjs = getPolObjs();
       console.log("type of polObjs: ", typeof polObjs);
       console.log("polObjs: ", polObjs);
+
       let polNode;
 
-      for (pol in polObjs) {
-        console.log("pol: ", pol);
-        if (pol.name == selPol) {
-          polNode = pol;
+      // Find selected politician
+      for (let i = 0; i < polObjs.length; i++) {
+        console.log("pol: ", polObjs[i]);
+        if (polObjs[i].name == selPol) {
+          polNode = polObjs[i];
         }
       }
 
@@ -546,21 +533,25 @@ function graphics() {
       console.log("selected politician node: ", polNode)
     };
 
-    // when add button for funding sources clicked
     addFundSource.onclick = function(){
-      // get name of funding source from drop down menu
-      let selFund = document.getElementById("selFundSource").value;
 
-      // get funding source node with name matching html selected name
-      let fundObjs = getFundObjs();
+      selFund = document.getElementById("selFundSource").value;
 
-      let fsNode = fundObjs.filter(function(obj) {
-        return obj.name == selFund;
-      });
-      //fsNode.x = 400;
-      //fsNode.y = 400;
-      console.log("selected funding source node: ", fsNode)
-    };
+      let fundNode;
+
+      // Find selected politician
+      for (let i = 0; i < fundObjs.length; i++) {
+        console.log("fund: ", fundObjs[i]);
+        if (fundObjs[i].name == selFund) {
+          fundNode = fundObjs[i];
+        }
+      }
+
+      console.log("selected funding node: ", fundNode)
+
+    }
+
+
 
 
     // warn the user when leaving
