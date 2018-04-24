@@ -25,6 +25,15 @@ $(document).ready(function() {
 	});
 });
 
+$('#addPol').click(function(e){
+    e.preventDefault();
+});
+$('#addFundSource').click(function(e){
+    e.preventDefault();
+});$('#clear').click(function(e){
+    e.preventDefault();
+});
+
 
 function graphics() {
 
