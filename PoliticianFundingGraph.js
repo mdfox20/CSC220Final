@@ -513,24 +513,22 @@ function graphics() {
       // get name of politician from drop down menu
       selPol = document.getElementById("selPol").value;
 
-      // get politician node with name matching html selected name
-      // let polObjs = getPolObjs();
-      console.log("type of polObjs: ", typeof polObjs);
-      console.log("polObjs: ", polObjs);
-
       let polNode;
 
       // Find selected politician
       for (let i = 0; i < polObjs.length; i++) {
-        console.log("pol: ", polObjs[i]);
         if (polObjs[i].name == selPol) {
           polNode = polObjs[i];
         }
       }
 
-      //polNode.x = 300;
-      //polNode.y = 300;
+      polNode.x = 300;
+      polNode.y = 300;
       console.log("selected politician node: ", polNode)
+
+			nodes.push(polNode);
+			console.log(nodes);
+			graph.updateGraph();
     };
 
     addFundSource.onclick = function(){
@@ -541,18 +539,19 @@ function graphics() {
 
       // Find selected politician
       for (let i = 0; i < fundObjs.length; i++) {
-        console.log("fund: ", fundObjs[i]);
         if (fundObjs[i].name == selFund) {
           fundNode = fundObjs[i];
         }
       }
 
+			fundNode.x = 300;
+			fundNode.y = 300;
       console.log("selected funding node: ", fundNode)
 
+			nodes.push(fundNode);
+			console.log(nodes);
+			graph.updateGraph();
     }
-
-
-
 
     // warn the user when leaving
     window.onbeforeunload = function(){
@@ -569,8 +568,7 @@ function graphics() {
         yLoc = 100;
 
     // initial node data
-    let nodes = [{name: "1", x: xLoc, y: yLoc},
-                  {name: "2", x: xLoc, y: yLoc + 200}, {name: "3", x: xLoc, y: yLoc + 300}];
+    let nodes = [];
     let edges = []; // No edges displayed to begin with
 
 
