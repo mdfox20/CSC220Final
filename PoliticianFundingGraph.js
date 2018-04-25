@@ -565,26 +565,31 @@ function graphics() {
 			graph.updateGraph();
 		}
 
+    let allEdges;
+
+
 		function updateEdges() {
-			let allEdges = fetch("edges.json").then(function(response){
+			fetch("edges.json").then(function(response){
 	      if(response.ok){
 	        response.json().then(function(json){
 						console.log("json: ", json);
-	          return json;
+	          allEdges = json;
+
+            // loop through nodes and add edges as appropriate
+            for (let i = 0; i < nodes.length; i++) {
+              for (let j = 0; j < allEdges.length; j++) {
+                console.log("iterating through loop");
+                if ((allEdges[j].head == nodes[i].name) || (allEdges[j].tail == nodes[i].name)) {
+                  console.log("about to push");
+                  edges.push(allEdges[j]);
+                }
+              }
+            }
+
 	        });
 	      }
 	    });
 
-			console.log(allEdges);
-
-			// loop through nodes and add edges as appropriate
-			for (let i = 0; i < nodes.length; i++) {
-				for (let j = 0; j < allEdges.length; i++) {
-					if ((allEdges[j].head == nodes[i].name) || (allEdges[j].tail == nodes[i].name)) {
-						edges.push(allEdges[j])
-					}
-				}
-			}
 		}
 
     /**** MAIN ****/
