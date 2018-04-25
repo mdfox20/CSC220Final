@@ -592,6 +592,7 @@ function graphics() {
 
       // Loop through nodes and add edges as appropriate
       for (let i = 0; i < nodes.length; i++) {
+
         for (let j = 0; j < undisplayedEdges.length; j++) {
 
           console.log("looping through j");
@@ -605,38 +606,46 @@ function graphics() {
 
             // To get these to actually be ATTACHED to the nodes we need to get their coords???
 
-            // Push the head node to array of nodes
-            nodes.push({name: undisplayedEdges[j].head,
-              amount: allEdges[j].amount,
-              type: "politician", // In edges.json, head nodes are always pols
-              x: Math.random() * (width - 10) + 10,
-              y: Math.random() * (width - 10) + 10
-            });
+            // Probably need to find a way to distinguish between the node we're bulding
+            // on and the NEW node (and we may not always need to add a new node, even if adding an edge??)
+
+            if (undisplayedEdges[j].head == nodes[i].name) {
+              // then the ALREADY DISPLAYED NODE is the "head" (aka politician)
+              // so we need new node for the relevant DONOR
+
+              // Create a new node to represent the donor
+              nodes.push({name: undisplayedEdges[j].tail, // Tail in edges.json is always a donor
+                amount: allEdges[j].amount,
+                type: "funding source",
+                x: Math.random() * (width - 10) + 10,
+                y: Math.random() * (width - 10) + 10
+              });
+
+
+            } else {
+              // then the ALREADY DISPLAYED NODE is the "tail" (aka donor)
+              // so we need new node for the relevant POL
+
+              nodes.push({name: undisplayedEdges[j].head, // Head in edges.json is always a pol
+                amount: allEdges[j].amount,
+                type: "politician",
+                x: Math.random() * (width - 10) + 10,
+                y: Math.random() * (width - 10) + 10
+              });
+
+            }
 
             // Grab the node from the array to work with locally
-            let headNode = nodes[nodes.length - 1];
+            let newNode = nodes[nodes.length - 1];
 
-            console.log("headNode name: ", headNode.name);
+            console.log("newNode name: ", newNode.name);
 
-            // Push the tail node to array of nodes
-            nodes.push({name: undisplayedEdges[j].tail,
-              amount: allEdges[j].amount,
-              type: "funding source", // In edges.json, tail nodes are always fund sources
-              x: Math.random() * (width - 10) + 10,
-              y: Math.random() * (width - 10) + 10
-            });
-
-            // Grab the node from the array to work with locally
-            let tailNode = nodes[nodes.length - 1];
-
-            console.log("tailnode name: ", tailNode.name);
-
-            let newEdge = {head: headNode, tail: tailNode};
-            let filtRes = graph.paths.filter(function(tailNode){
-              if (tailNode.head === newEdge.tail && tailNode.tail === newEdge.head){
-                graph.edges.splice(graph.edges.indexOf(tailNode), 1);
+            let newEdge = {head: nodes[i], tail: newNode};
+            let filtRes = graph.paths.filter(function(newNode){
+              if (newNode.head === newEdge.tail && newNode.tail === newEdge.head){
+                graph.edges.splice(graph.edges.indexOf(newNode), 1);
               } // close if-statement
-              return tailNode.head === newEdge.head && tailNode.tail === newEdge.tail;
+              return newNode.head === newEdge.head && newNode.tail === newEdge.tail;
             }); // close filtRes
             if (!filtRes[0].length){
               graph.edges.push(newEdge);
