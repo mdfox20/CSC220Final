@@ -590,6 +590,8 @@ function graphics() {
 
 		function updateEdges() {
 
+      let newDisplayedEdges = [];
+
       // Loop through nodes and add edges as appropriate
       for (let i = 0; i < nodes.length; i++) {
 
@@ -603,8 +605,6 @@ function graphics() {
           if ((undisplayedEdges[j].head == nodes[i].name) || (undisplayedEdges[j].tail == nodes[i].name)) {
 
             console.log("found a match");
-
-            // To get these to actually be ATTACHED to the nodes we need to get their coords???
 
             // Probably need to find a way to distinguish between the node we're bulding
             // on and the NEW node (and we may not always need to add a new node, even if adding an edge??)
@@ -621,6 +621,22 @@ function graphics() {
                 y: Math.random() * (width - 10) + 10
               });
 
+              // Grab the node from the array to work with locally
+              let newNode = nodes[nodes.length - 1];
+
+              console.log("newNode name: ", newNode.name);
+
+              let newEdge = {head: nodes[i], tail: newNode};
+              let filtRes = graph.paths.filter(function(newNode){
+                if (newNode.head === newEdge.tail && newNode.tail === newEdge.head){
+                  graph.edges.splice(graph.edges.indexOf(newNode), 1);
+                } // close if-statement
+                return newNode.head === newEdge.head && newNode.tail === newEdge.tail;
+              }); // close filtRes
+              if (!filtRes[0].length){
+                graph.edges.push(newEdge);
+                graph.updateGraph();
+              } // close if-statement
 
             } else {
               // then the ALREADY DISPLAYED NODE is the "tail" (aka donor)
@@ -633,36 +649,38 @@ function graphics() {
                 y: Math.random() * (width - 10) + 10
               });
 
-            }
+              // Grab the node from the array to work with locally
+              let oldNode = nodes[i]
+              let newNode = nodes[nodes.length - 1];
 
-            // Grab the node from the array to work with locally
-            let newNode = nodes[nodes.length - 1];
+              console.log("newNode name: ", newNode.name);
 
-            console.log("newNode name: ", newNode.name);
-
-            let newEdge = {head: nodes[i], tail: newNode};
-            let filtRes = graph.paths.filter(function(newNode){
-              if (newNode.head === newEdge.tail && newNode.tail === newEdge.head){
-                graph.edges.splice(graph.edges.indexOf(newNode), 1);
+              let newEdge = {head: newNode, tail: oldNode};
+              let filtRes = graph.paths.filter(function(oldNode){
+                if (oldNode.head === newEdge.tail && oldNode.tail === newEdge.head){
+                  graph.edges.splice(graph.edges.indexOf(oldNode), 1);
+                } // close if-statement
+                return oldNode.head === newEdge.head && nodes[i].tail === newEdge.tail;
+              }); // close filtRes
+              if (!filtRes[0].length){
+                graph.edges.push(newEdge);
+                graph.updateGraph();
               } // close if-statement
-              return newNode.head === newEdge.head && newNode.tail === newEdge.tail;
-            }); // close filtRes
-            if (!filtRes[0].length){
-              graph.edges.push(newEdge);
-              graph.updateGraph();
-            } // close if-statement
 
-            // Edge is now displayed, so remove it from list of undisplayedEdges
-            // This code block from https://stackoverflow.com/questions/5767325/how-do-i-remove-a-particular-element-from-an-array-in-javascript
-            let index = undisplayedEdges.indexOf(undisplayedEdges[j]);
-            if (index > -1) {
-              undisplayedEdges.splice(index, 1);
-            }
+            } // close else
+
+						// This code block from https://stackoverflow.com/questions/5767325/how-do-i-remove-a-particular-element-from-an-array-in-javascript
+						let index = undisplayedEdges.indexOf(undisplayedEdges[j]);
+						if (index > -1) {
+							undisplayedEdges.splice(index, 1);
+							j--;
+						}
 
           } // close big if-statement
 
         } // close j for loop
       } // close i for loop
+
 
 		} // close updateEdges
 
