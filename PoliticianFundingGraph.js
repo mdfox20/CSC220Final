@@ -582,8 +582,22 @@ function graphics() {
 
     // Executes whenever clear button is clicked
 		clear.onclick = function() {
+
 			nodes.length = 0;
+			console.log("nodes: " + nodes);
 			edges.length = 0;
+			console.log("edges: " + edges);
+
+			fetch("edges.json").then(function(response){
+				if(response.ok){
+					response.json().then(function(json){
+						allEdges = json;
+						undisplayedEdges = allEdges;  // Initially, no edges are displayed
+					});
+				}
+			});
+			console.log("undisplayedEdges" + undisplayedEdges);
+
 			graph.updateGraph();
 		}
 
