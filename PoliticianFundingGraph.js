@@ -605,7 +605,7 @@ function graphics() {
 
 		}
 
-		
+
 		function updateEdges() {
 
       // Loop through nodes and add edges as appropriate

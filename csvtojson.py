@@ -39,7 +39,8 @@ for fname in fnames:
 
   for row in reader:
     nodesjson.write(',\n')
-    json.dump(row, nodesjson)
+    print(row)
+    json.dump({"name": row.get("name"), "type": row.get("type")}, nodesjson)
 
     json.dump({"head": name, "tail": row.get("name"), "amount": row.get("amount")}, edgesjson)
     edgesjson.write(',\n')
