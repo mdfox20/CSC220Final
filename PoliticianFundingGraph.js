@@ -25,12 +25,14 @@ $(document).ready(function() {
 	});
 });
 
+// Prevent browser from trying to reload page every time button is pressed
 $('#addPol').click(function(e){
     e.preventDefault();
 });
 $('#addFundSource').click(function(e){
     e.preventDefault();
-});$('#clear').click(function(e){
+});
+$('#clear').click(function(e){
     e.preventDefault();
 });
 
@@ -491,12 +493,17 @@ function graphics() {
 
     // OUR ADDED CODE BLOCKS //
 
+
 		/** HTML ELEMENTS AND LISTENERS **/
 
     // Grab button elements from HTML
     let addPol = document.querySelector('#addPol');
     let addFundSource = document.querySelector('#addFundSource');
 		let clear = document.querySelector('#clear');
+
+		// Grab drop down menu selected elements from HTML when add buttons clicked
+		let selPol;
+		let selFund;
 
     // Arrays to store all politician nodes and all funding nodes
     let polObjs = [];
@@ -529,9 +536,6 @@ function graphics() {
       }
     });
 
-    // Grab drop down menu selected elements from HTML when add buttons clicked
-    let selPol;
-    let selFund;
 
     // When add button for politicans clicked
     addPol.onclick = function(){
@@ -555,7 +559,7 @@ function graphics() {
 			updateEdges(); // Update the edges for this node
 			graph.updateGraph(); // Update the display
 
-    }; // Close addPol.onclick
+    };
 
     // This function executes whenever addFundSource button is clicked
     addFundSource.onclick = function(){
@@ -583,11 +587,11 @@ function graphics() {
     // Executes whenever clear button is clicked
 		clear.onclick = function() {
 
+			// Clear nodes and edges from d3 variables
 			nodes.length = 0;
-			console.log("nodes: " + nodes);
 			edges.length = 0;
-			console.log("edges: " + edges);
 
+			// Now reload the edges from JSON and reset edge variables
 			fetch("edges.json").then(function(response){
 				if(response.ok){
 					response.json().then(function(json){
@@ -596,39 +600,30 @@ function graphics() {
 					});
 				}
 			});
-			console.log("undisplayedEdges" + undisplayedEdges);
 
-			graph.updateGraph();
+			graph.updateGraph(); // Update display
+
 		}
 
-
+		
 		function updateEdges() {
-
-      let newDisplayedEdges = [];
 
       // Loop through nodes and add edges as appropriate
       for (let i = 0; i < nodes.length; i++) {
 
         for (let j = 0; j < undisplayedEdges.length; j++) {
 
-          console.log("looping through j");
-
           // We are looking for currently displayed nodes with edges that are NOT yet displayed
 
-          // If this edge's head is the same as a displayed node (or if this edge's tail is same as displayed node)
+          // If this edge's head is the same as a displayed node, or if this edge's tail is same as displayed node)
           if ((undisplayedEdges[j].head == nodes[i].name) || (undisplayedEdges[j].tail == nodes[i].name)) {
 
-            console.log("found a match");
-
-            // Probably need to find a way to distinguish between the node we're bulding
-            // on and the NEW node (and we may not always need to add a new node, even if adding an edge??)
-
             if (undisplayedEdges[j].head == nodes[i].name) {
-              // then the ALREADY DISPLAYED NODE is the "head" (aka politician)
-              // so we need new node for the relevant DONOR
+              // If the already displayed node is the "head" (aka politician)
+              // We need to make a new node for the relevant donor
 
               // Create a new node to represent the donor
-              nodes.push({name: undisplayedEdges[j].tail, // Tail in edges.json is always a donor
+              nodes.push({name: undisplayedEdges[j].tail, // tail in edges.json is always a donor
                 amount: allEdges[j].amount,
                 type: "funding source",
                 x: Math.random() * (width - 10) + 10,
@@ -638,8 +633,7 @@ function graphics() {
               // Grab the node from the array to work with locally
               let newNode = nodes[nodes.length - 1];
 
-              console.log("newNode name: ", newNode.name);
-
+							// Adapted from d3 function to add nodes
               let newEdge = {head: nodes[i], tail: newNode};
               let filtRes = graph.paths.filter(function(newNode){
                 if (newNode.head === newEdge.tail && newNode.tail === newEdge.head){
@@ -653,22 +647,20 @@ function graphics() {
               } // close if-statement
 
             } else {
-              // then the ALREADY DISPLAYED NODE is the "tail" (aka donor)
-              // so we need new node for the relevant POL
+              // The already displayed node is the "tail" (aka donor)
+              // So we need a new node for the relevant politician
 
-              nodes.push({name: undisplayedEdges[j].head, // Head in edges.json is always a pol
+              nodes.push({name: undisplayedEdges[j].head, // head in edges.json is always a pol
                 amount: allEdges[j].amount,
                 type: "politician",
                 x: Math.random() * (width - 10) + 10,
                 y: Math.random() * (width - 10) + 10
               });
 
-              // Grab the node from the array to work with locally
               let oldNode = nodes[i]
-              let newNode = nodes[nodes.length - 1];
+              let newNode = nodes[nodes.length - 1]; // Grab the node from the array to work with locally
 
-              console.log("newNode name: ", newNode.name);
-
+							// Adapted from d3 function to add new nodes
               let newEdge = {head: newNode, tail: oldNode};
               let filtRes = graph.paths.filter(function(oldNode){
                 if (oldNode.head === newEdge.tail && oldNode.tail === newEdge.head){
@@ -683,11 +675,12 @@ function graphics() {
 
             } // close else
 
+						// Now remove from undisplayedEdges the edge we have just added to the display
 						// This code block from https://stackoverflow.com/questions/5767325/how-do-i-remove-a-particular-element-from-an-array-in-javascript
 						let index = undisplayedEdges.indexOf(undisplayedEdges[j]);
 						if (index > -1) {
 							undisplayedEdges.splice(index, 1);
-							j--;
+							j--; // Array indices have shifted, so we need to decrement loop varialbe
 						}
 
           } // close big if-statement
