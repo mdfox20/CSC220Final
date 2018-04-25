@@ -302,6 +302,7 @@ function graphics() {
       if (!mouseDownNode) return;
 
       if (mouseDownNode !== d){
+        console.log(d);
         // we're in a different node: create new edge for mousedown edge and add to graph
         let newEdge = {head: mouseDownNode, tail: d};
         let filtRes = thisGraph.paths.filter(function(d){
@@ -487,24 +488,28 @@ function graphics() {
       svg.attr("width", x).attr("height", y);
     };
 
+
+    // OUR ADDED CODE BLOCKS //
+
 		/** HTML ELEMENTS AND LISTENERS **/
 
-    // grab button elements from html
+    // Grab button elements from HTML
     let addPol = document.querySelector('#addPol');
     let addFundSource = document.querySelector('#addFundSource');
 		let clear = document.querySelector('#clear');
 
+    // Arrays to store all politician nodes and all funding nodes
     let polObjs = [];
     let fundObjs = [];
 
-    // get all politician nodes from JSON of all nodes and push into array
+    // Get all politician nodes from JSON of all nodes and push into array
     fetch("nodes.json").then(function(response){
       if(response.ok){
         response.json().then(function(json){
           for (let i = 0; i < json.length; i++) {
             if (json[i].type == "politician"){
               polObjs.push(json[i]);
-            } else {
+            } else { // If type is funding source
               fundObjs.push(json[i]);
             }
           }
@@ -512,17 +517,29 @@ function graphics() {
       }
     });
 
-    // grab drop down menu selected elements from html when add buttons clicked
+    // Get all edges from JSON of all edges
+    let allEdges;
+    let undisplayedEdges;
+    fetch("edges.json").then(function(response){
+      if(response.ok){
+        response.json().then(function(json){
+          allEdges = json;
+          undisplayedEdges = allEdges;  // Initially, no edges are displayed
+        });
+      }
+    });
+
+    // Grab drop down menu selected elements from HTML when add buttons clicked
     let selPol;
     let selFund;
 
-    // when add button for politicans clicked
+    // When add button for politicans clicked
     addPol.onclick = function(){
-      // get name of politician from drop down menu
+
+      // Get name of politician from drop down menu
       selPol = document.getElementById("selPol").value;
 
       let polNode;
-
       // Find selected politician
       for (let i = 0; i < polObjs.length; i++) {
         if (polObjs[i].name == selPol) {
@@ -530,67 +547,115 @@ function graphics() {
         }
       }
 
+      // Set random coordinates to place polNode
       polNode.x = Math.random() * (width - 10) + 10;
       polNode.y = Math.random() * (height - 10) + 10;
 
-			nodes.push(polNode);
-			updateEdges();
-			graph.updateGraph();
-    };
+			nodes.push(polNode); // Add to list of nodes
+			updateEdges(); // Update the edges for this node
+			graph.updateGraph(); // Update the display
 
+    }; // Close addPol.onclick
+
+    // This function executes whenever addFundSource button is clicked
     addFundSource.onclick = function(){
 
+      // Get name of funding source from drop down menu
       selFund = document.getElementById("selFundSource").value;
 
       let fundNode;
-
-      // Find selected politician
+      // Find selected funding source
       for (let i = 0; i < fundObjs.length; i++) {
         if (fundObjs[i].name == selFund) {
           fundNode = fundObjs[i];
         }
       }
 
+      // Set random coordinates for fundNode
 			fundNode.x = Math.random() * (width - 10) + 10;
 			fundNode.y = Math.random() * (height - 10) + 10;
 
-			nodes.push(fundNode);
-			updateEdges();
-			graph.updateGraph();
+			nodes.push(fundNode); // Add to list of nodes
+			updateEdges(); // Update edges for this given node
+			graph.updateGraph(); // Update display
     }
 
+    // Executes whenever clear button is clicked
 		clear.onclick = function() {
 			nodes.length = 0;
 			edges.length = 0;
 			graph.updateGraph();
 		}
 
-    let allEdges;
-
 
 		function updateEdges() {
-			fetch("edges.json").then(function(response){
-	      if(response.ok){
-	        response.json().then(function(json){
-						console.log("json: ", json);
-	          allEdges = json;
 
-            // loop through nodes and add edges as appropriate
-            for (let i = 0; i < nodes.length; i++) {
-              for (let j = 0; j < allEdges.length; j++) {
-                console.log("iterating through loop");
-                if ((allEdges[j].head == nodes[i].name) || (allEdges[j].tail == nodes[i].name)) {
-                  console.log("about to push");
-                  edges.push(allEdges[j]);
-                }
-              }
+      // Loop through nodes and add edges as appropriate
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = 0; j < undisplayedEdges.length; j++) {
+
+          console.log("looping through j");
+
+          // We are looking for currently displayed nodes with edges that are NOT yet displayed
+
+          // If this edge's head is the same as a displayed node (or if this edge's tail is same as displayed node)
+          if ((undisplayedEdges[j].head == nodes[i].name) || (undisplayedEdges[j].tail == nodes[i].name)) {
+
+            console.log("found a match");
+
+            // To get these to actually be ATTACHED to the nodes we need to get their coords???
+
+            // Push the head node to array of nodes
+            nodes.push({name: undisplayedEdges[j].head,
+              amount: allEdges[j].amount,
+              type: "politician", // In edges.json, head nodes are always pols
+              x: Math.random() * (width - 10) + 10,
+              y: Math.random() * (width - 10) + 10
+            });
+
+            // Grab the node from the array to work with locally
+            let headNode = nodes[nodes.length - 1];
+
+            console.log("headNode name: ", headNode.name);
+
+            // Push the tail node to array of nodes
+            nodes.push({name: undisplayedEdges[j].tail,
+              amount: allEdges[j].amount,
+              type: "funding source", // In edges.json, tail nodes are always fund sources
+              x: Math.random() * (width - 10) + 10,
+              y: Math.random() * (width - 10) + 10
+            });
+
+            // Grab the node from the array to work with locally
+            let tailNode = nodes[nodes.length - 1];
+
+            console.log("tailnode name: ", tailNode.name);
+
+            let newEdge = {head: headNode, tail: tailNode};
+            let filtRes = graph.paths.filter(function(tailNode){
+              if (tailNode.head === newEdge.tail && tailNode.tail === newEdge.head){
+                graph.edges.splice(graph.edges.indexOf(tailNode), 1);
+              } // close if-statement
+              return tailNode.head === newEdge.head && tailNode.tail === newEdge.tail;
+            }); // close filtRes
+            if (!filtRes[0].length){
+              graph.edges.push(newEdge);
+              graph.updateGraph();
+            } // close if-statement
+
+            // Edge is now displayed, so remove it from list of undisplayedEdges
+            // This code block from https://stackoverflow.com/questions/5767325/how-do-i-remove-a-particular-element-from-an-array-in-javascript
+            let index = undisplayedEdges.indexOf(undisplayedEdges[j]);
+            if (index > -1) {
+              undisplayedEdges.splice(index, 1);
             }
 
-	        });
-	      }
-	    });
+          } // close big if-statement
 
-		}
+        } // close j for loop
+      } // close i for loop
+
+		} // close updateEdges
 
     /**** MAIN ****/
 
