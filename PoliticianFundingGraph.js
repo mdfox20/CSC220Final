@@ -1,7 +1,6 @@
+// Set up document by displaying options for dropdown menus
 $(document).ready(function() {
-  // all custom jQuery will go here
 	$.getJSON("nodes.json", function(data) {
-    // console.log(data);
 		let polNames = [];
     let fundNames = [];
     $.each(data, function(key,val) {
@@ -12,7 +11,6 @@ $(document).ready(function() {
         fundNames.push(this.name);
       }
     });
-
 		let selPol = $("selPol");
 		$.each(polNames, function(index, value) {
 			$("#selPol").append("<option>" + value + "</option>");
@@ -21,11 +19,10 @@ $(document).ready(function() {
     $.each(fundNames, function(index, value) {
       $("#selFundSource").append("<option>" + value + "</option>");
     });
-
 	});
 });
 
-// Prevent browser from trying to reload page every time button is pressed
+// Prevent browser from trying to reload page every time a button is pressed
 $('#addPol').click(function(e){
     e.preventDefault();
 });
@@ -491,10 +488,8 @@ function graphics() {
     };
 
 
-    // OUR ADDED CODE BLOCKS //
+    // ADDED CODE BLOCKS //
 
-
-		/** HTML ELEMENTS AND LISTENERS **/
 
     // Grab button elements from HTML
     let addPol = document.querySelector('#addPol');
@@ -513,11 +508,16 @@ function graphics() {
     fetch("nodes.json").then(function(response){
       if(response.ok){
         response.json().then(function(json){
+					// Keep track of unique nodes to prevent adding same node name twice
+					let uniqueNodeNames = new Set();
           for (let i = 0; i < json.length; i++) {
-            if (json[i].type == "politician"){
+            if ((json[i].type == "politician") // If a new politician node
+					 	&& (!(uniqueNodeNames.has(json[i].name)))) {
               polObjs.push(json[i]);
-            } else { // If type is funding source
+							uniqueNodeNames.add(json[i].name);
+            } else if (!(uniqueNodeNames.has(json[i].name))) { // If new fund node
               fundObjs.push(json[i]);
+							uniqueNodeNames.add(json[i].name);
             }
           }
         });
@@ -536,8 +536,7 @@ function graphics() {
       }
     });
 
-
-    // When add button for politicans clicked
+    // Executes whenever addPol button is clicked
     addPol.onclick = function(){
 
       // Get name of politician from drop down menu
@@ -556,12 +555,12 @@ function graphics() {
       polNode.y = Math.random() * (height - 10) + 10;
 
 			nodes.push(polNode); // Add to list of nodes
-			updateEdges(); // Update the edges for this node
+			updateEdges(polNode); // Update the edges for this node
 			graph.updateGraph(); // Update the display
 
     };
 
-    // This function executes whenever addFundSource button is clicked
+    // Executes whenever addFundSource button is clicked
     addFundSource.onclick = function(){
 
       // Get name of funding source from drop down menu
@@ -580,7 +579,7 @@ function graphics() {
 			fundNode.y = Math.random() * (height - 10) + 10;
 
 			nodes.push(fundNode); // Add to list of nodes
-			updateEdges(); // Update edges for this given node
+			updateEdges(fundNode); // Update edges for this given node
 			graph.updateGraph(); // Update display
     }
 
@@ -605,91 +604,120 @@ function graphics() {
 
 		}
 
+		// Displays all currently undisplayed edges for a given node
+		function updateEdges(startNode) {
 
-		function updateEdges() {
+			let endNode; // Node to draw an edge to
 
-      // Loop through nodes and add edges as appropriate
-      for (let i = 0; i < nodes.length; i++) {
+			// Loop through all edges not currently displayed on screen
+			for (let i = 0; i < undisplayedEdges.length; i++) {
 
-        for (let j = 0; j < undisplayedEdges.length; j++) {
+				/* If the current node is the "head" of this edge, it is a pol node,
+				   because all head nodes in edges.json are politicians */
+				if (undisplayedEdges[i].head == startNode.name) {
 
-          // We are looking for currently displayed nodes with edges that are NOT yet displayed
-
-          // If this edge's head is the same as a displayed node, or if this edge's tail is same as displayed node)
-          if ((undisplayedEdges[j].head == nodes[i].name) || (undisplayedEdges[j].tail == nodes[i].name)) {
-
-            if (undisplayedEdges[j].head == nodes[i].name) {
-              // If the already displayed node is the "head" (aka politician)
-              // We need to make a new node for the relevant donor
-
-              // Create a new node to represent the donor
-              nodes.push({name: undisplayedEdges[j].tail, // tail in edges.json is always a donor
-                amount: allEdges[j].amount,
-                type: "funding source",
-                x: Math.random() * (width - 10) + 10,
-                y: Math.random() * (width - 10) + 10
-              });
-
-              // Grab the node from the array to work with locally
-              let newNode = nodes[nodes.length - 1];
-
-							// Adapted from d3 function to add nodes
-              let newEdge = {head: nodes[i], tail: newNode};
-              let filtRes = graph.paths.filter(function(newNode){
-                if (newNode.head === newEdge.tail && newNode.tail === newEdge.head){
-                  graph.edges.splice(graph.edges.indexOf(newNode), 1);
-                } // close if-statement
-                return newNode.head === newEdge.head && newNode.tail === newEdge.tail;
-              }); // close filtRes
-              if (!filtRes[0].length){
-                graph.edges.push(newEdge);
-                graph.updateGraph();
-              } // close if-statement
-
-            } else {
-              // The already displayed node is the "tail" (aka donor)
-              // So we need a new node for the relevant politician
-
-              nodes.push({name: undisplayedEdges[j].head, // head in edges.json is always a pol
-                amount: allEdges[j].amount,
-                type: "politician",
-                x: Math.random() * (width - 10) + 10,
-                y: Math.random() * (width - 10) + 10
-              });
-
-              let oldNode = nodes[i]
-              let newNode = nodes[nodes.length - 1]; // Grab the node from the array to work with locally
-
-							// Adapted from d3 function to add new nodes
-              let newEdge = {head: newNode, tail: oldNode};
-              let filtRes = graph.paths.filter(function(oldNode){
-                if (oldNode.head === newEdge.tail && oldNode.tail === newEdge.head){
-                  graph.edges.splice(graph.edges.indexOf(oldNode), 1);
-                } // close if-statement
-                return oldNode.head === newEdge.head && nodes[i].tail === newEdge.tail;
-              }); // close filtRes
-              if (!filtRes[0].length){
-                graph.edges.push(newEdge);
-                graph.updateGraph();
-              } // close if-statement
-
-            } // close else
-
-						// Now remove from undisplayedEdges the edge we have just added to the display
-						// This code block from https://stackoverflow.com/questions/5767325/how-do-i-remove-a-particular-element-from-an-array-in-javascript
-						let index = undisplayedEdges.indexOf(undisplayedEdges[j]);
-						if (index > -1) {
-							undisplayedEdges.splice(index, 1);
-							j--; // Array indices have shifted, so we need to decrement loop varialbe
+					// Search through fundObjs to find the proper endNode for the edge
+					for (let j = 0; j < fundObjs.length; j++) {
+						if (fundObjs[j].name == undisplayedEdges[i].tail) {
+							endNode = fundObjs[j];
+							break;
 						}
+					}
 
-          } // close big if-statement
+					// Set random coordinates for placement of endNode
+					endNode.x = Math.random() * (width - 10) + 10;
+					endNode.y = Math.random() * (width - 10) + 10;
 
-        } // close j for loop
-      } // close i for loop
+					// Check if endNode is already in nodes list before pushing it
+					let nodeInList = false;
+					for (let j = 0; j < nodes.length; j++) {
+						if (nodes[j].name == endNode.name) {
+							nodeInList = true;
+						}
+					}
+					if (!(nodeInList)) {
+						nodes.push(endNode);
+					}
 
+					// Adapted from d3 function to add nodes
+					let newEdge = {head: startNode, tail: endNode};
+					let filtRes = graph.paths.filter(function(endNode){
+						if (endNode.head === newEdge.tail && endNode.tail === newEdge.head){
+							graph.edges.splice(graph.edges.indexOf(endNode), 1);
+						}
+						return endNode.head === newEdge.head && endNode.tail === newEdge.tail;
+					});
+					if (!filtRes[0].length){
+						graph.edges.push(newEdge);
+						graph.updateGraph();
+					}
 
-		} // close updateEdges
+					/* Remove from undisplayedEdges the edge just added to the display,
+					   to prevent the program from unecessarily redrawing edges.
+					   This code block from https://stackoverflow.com/questions/5767325/how-do-i-remove-a-particular-element-from-an-array-in-javascript */
+					let index = undisplayedEdges.indexOf(undisplayedEdges[i]);
+					if (index > -1) {
+						undisplayedEdges.splice(index, 1);
+						i--; // Array indices have shifted, so we need to decrement loop varialbe
+					}
+
+				}
+
+				/* If the current node is the "tail" of this edge, it is a fund node,
+					 because all tail nodes in edges.json are funding sources */
+				else if (undisplayedEdges[i].tail == startNode.name) {
+
+					// Search through polObjs to find the proper endNode for this edge
+					for (let j = 0; j < polObjs.length; j++) {
+						if (polObjs[j].name == undisplayedEdges[i].head) {
+							endNode = polObjs[j];
+							break;
+						}
+					}
+
+					// Set random coordinates for endNode
+					endNode.x = Math.random() * (width - 10) + 10;
+					endNode.y = Math.random() * (width - 10) + 10;
+
+					// Check if node is already in nodes list before pushing it
+					let nodeInList = false;
+					for (let j = 0; j < nodes.length; j++) {
+						if (nodes[j].name == endNode.name) {
+							nodeInList = true;
+						}
+					}
+					if (!(nodeInList)) {
+						nodes.push(endNode);
+					}
+
+					// Adapted from d3 function to add nodes
+					let newEdge = {head: startNode, tail: endNode};
+					let filtRes = graph.paths.filter(function(endNode){
+						if (endNode.head === newEdge.tail && endNode.tail === newEdge.head){
+							graph.edges.splice(graph.edges.indexOf(endNode), 1);
+						} // close if-statement
+						return endNode.head === newEdge.head && endNode.tail === newEdge.tail;
+					}); // close filtRes
+					if (!filtRes[0].length){
+						graph.edges.push(newEdge);
+						graph.updateGraph();
+					} // close if-statement
+
+					/* Remove from undisplayedEdges the edge just added to the display,
+					   to prevent the program from unecessarily redrawing edges.
+					   This code block from https://stackoverflow.com/questions/5767325/how-do-i-remove-a-particular-element-from-an-array-in-javascript */
+					let index = undisplayedEdges.indexOf(undisplayedEdges[i]);
+					if (index > -1) {
+						undisplayedEdges.splice(index, 1);
+						i--; // Array indices have shifted, so we need to decrement loop varialbe
+					}
+
+				}
+
+			}
+
+	 }
+
 
     /**** MAIN ****/
 
@@ -718,4 +746,4 @@ function graphics() {
   } )(window.d3, window.saveAs, window.Blob);
 }
 
-graphics();
+graphics(); // Set up d3
