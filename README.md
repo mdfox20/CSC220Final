@@ -5,6 +5,8 @@ Assignment: Final Project--Initial Prototype
 Names: Eve Zikmund-Fisher, Hannah Waris, Maddy Fox
 Date Due: 4/26/18
 
+Based on: https://bl.ocks.org/cjrd/6863459
+
 INSTRUCTIONS TO RUN:
 1) Set up local host for directory containing all files
 2) Run csvtojson.py
