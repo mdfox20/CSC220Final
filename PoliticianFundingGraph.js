@@ -140,12 +140,6 @@ function graphics() {
 
       // listen for resize
       window.onresize = function(){thisGraph.updateWindow(svg);};
-
-
-      // handle delete graph
-      d3.select("#delete-graph").on("click", function(){
-        thisGraph.deleteGraph(false);
-      });
     };
 
     GraphCreator.prototype.setIdCt = function(idct){
