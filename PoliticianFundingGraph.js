@@ -435,8 +435,9 @@ function graphics() {
       thisGraph.circles.attr("transform", function(d){return "translate(" + d.x + "," + d.y + ")";});
 
       // add new nodes
-      let newGs= thisGraph.circles.enter()
-            .append("g");
+			let newGs= thisGraph.circles.enter()
+			      .append("g")
+			      .attr("class", function(d){ return d.type;});
 
       newGs.classed(consts.circleGClass, true)
         .attr("transform", function(d){return "translate(" + d.x + "," + d.y + ")";})

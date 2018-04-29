@@ -100,8 +100,14 @@ marker{
   fill: #333;
 }
 
-g.conceptG circle{
-  fill: #F6FBFF;
+g.conceptG.funding circle{
+  fill: #98D2EB;
+  stroke: #333;
+  stroke-width: 2px;
+}
+
+g.conceptG.politician circle{
+  fill: #B2B1CF;
   stroke: #333;
   stroke-width: 2px;
 }
