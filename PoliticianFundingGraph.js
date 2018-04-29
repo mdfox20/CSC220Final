@@ -741,7 +741,7 @@ function graphics() {
 
 						// Ending node will be another node that already is displayed
 						for (let k = 0; k < fundObjs.length; k++) {
-							if (fundObjs[k].name == undisplayedEdges[i].head) {
+							if (fundObjs[k].name == undisplayedEdges[i].tail) {
 								endNode = fundObjs[k];
 								break;
 							}
