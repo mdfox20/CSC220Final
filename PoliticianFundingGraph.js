@@ -603,6 +603,8 @@ function graphics() {
 
 			let endNode; // Node to draw an edge to
 
+			let endNodesDrawn = []; // End nodes that will be drawn in this function
+
 			// Loop through all edges not currently displayed on screen
 			for (let i = 0; i < undisplayedEdges.length; i++) {
 
@@ -633,8 +635,9 @@ function graphics() {
 						nodes.push(endNode);
 					}
 
-					// Adapted from d3 function to add nodes
-					let newEdge = {head: startNode, tail: endNode};
+					// Adapted from d3 function to add edges
+					// Draw edge between start node and end node
+					let newEdge = {head: startNode, tail: endNode, amount: undisplayedEdges.amount};
 					let filtRes = graph.paths.filter(function(endNode){
 						if (endNode.head === newEdge.tail && endNode.tail === newEdge.head){
 							graph.edges.splice(graph.edges.indexOf(endNode), 1);
@@ -646,6 +649,8 @@ function graphics() {
 						graph.updateGraph();
 					}
 
+					endNodesDrawn.push(endNode);
+
 					/* Remove from undisplayedEdges the edge just added to the display,
 					   to prevent the program from unecessarily redrawing edges.
 					   This code block from https://stackoverflow.com/questions/5767325/how-do-i-remove-a-particular-element-from-an-array-in-javascript */
@@ -655,7 +660,8 @@ function graphics() {
 						i--; // Array indices have shifted, so we need to decrement loop varialbe
 					}
 
-				}
+
+				} // close if-statement
 
 				/* If the current node is the "tail" of this edge, it is a fund node,
 					 because all tail nodes in edges.json are funding sources */
@@ -684,8 +690,9 @@ function graphics() {
 						nodes.push(endNode);
 					}
 
-					// Adapted from d3 function to add nodes
-					let newEdge = {head: startNode, tail: endNode};
+					// Adapted from d3 function to add edges
+					// Draw edge between start node and end node
+					let newEdge = {head: startNode, tail: endNode, amount: undisplayedEdges.amount};
 					let filtRes = graph.paths.filter(function(endNode){
 						if (endNode.head === newEdge.tail && endNode.tail === newEdge.head){
 							graph.edges.splice(graph.edges.indexOf(endNode), 1);
@@ -697,6 +704,8 @@ function graphics() {
 						graph.updateGraph();
 					} // close if-statement
 
+					endNodesDrawn.push(endNode);
+
 					/* Remove from undisplayedEdges the edge just added to the display,
 					   to prevent the program from unecessarily redrawing edges.
 					   This code block from https://stackoverflow.com/questions/5767325/how-do-i-remove-a-particular-element-from-an-array-in-javascript */
@@ -704,13 +713,127 @@ function graphics() {
 					if (index > -1) {
 						undisplayedEdges.splice(index, 1);
 						i--; // Array indices have shifted, so we need to decrement loop varialbe
+					} // close if
+
+				} // close else
+
+			} // close for loop
+
+
+			// Loop through nodes just drawn
+			// If any of those nodes have undrawn edges with a node ALREAY DRAWN, draw the edge
+
+			for (let i=0; i < undisplayedEdges.length; i++) {
+
+				for (let j=0; j < endNodesDrawn.length; j++) {
+
+					// A politician was the endNode; looking for a funding node
+
+					/* If the name of one of the nodes just drawn is equal to the name
+					of the head (which will be a politician) of an undisplayed edge
+					AND the tail node (a funding source) of that undisplayed edge
+					is already displayed */
+
+					// Second line of if-statement from https://stackoverflow.com/questions/8217419/how-to-determine-if-javascript-array-contains-an-object-with-an-attribute-that-e
+
+					if ( endNodesDrawn[j].name == undisplayedEdges[i].head &&
+					nodes.filter(e => e.name === undisplayedEdges[i].tail).length > 0 ){
+
+						let startNode = endNodesDrawn[j]; // Starting node will be node just drawn
+						let endNode = [];
+
+						// Ending node will be another node that already is displayed
+						for (let k = 0; k < fundObjs.length; k++) {
+							if (fundObjs[k].name == undisplayedEdges[i].head) {
+								endNode = fundObjs[k];
+								break;
+							}
+						}
+
+						// Set locations
+						startNode.x = Math.random() * (width - 10) + 10;
+						startNode.y = Math.random() * (width - 10) + 10;
+						endNode.x = Math.random() * (width - 10) + 10;
+						endNode.y = Math.random() * (width - 10) + 10;
+
+						// Add the edge
+						let newEdge = {head: startNode, tail: endNode, amount: undisplayedEdges.amount};
+						let filtRes = graph.paths.filter(function(endNode){
+							if (endNode.head === newEdge.tail && endNode.tail === newEdge.head){
+								graph.edges.splice(graph.edges.indexOf(endNode), 1);
+							} // close if-statement
+							return endNode.head === newEdge.head && endNode.tail === newEdge.tail;
+						}); // close filtRes
+						if (!filtRes[0].length){
+							graph.edges.push(newEdge);
+							graph.updateGraph();
+						} // close if-statement
+
+						let index = undisplayedEdges.indexOf(undisplayedEdges[i]);
+						if (index > -1) {
+							undisplayedEdges.splice(index, 1);
+							i--; // Array indices have shifted, so we need to decrement loop varialbe
+						} // close if
+
 					}
 
-				}
+					// A funding source was the endNode; looking for a pol node
 
-			}
+					/* If the name of one of the nodes just drawn is equal to the name
+					of the tail (which will be a donor) of an undisplayed edge
+					AND the head node (a politician) of that undisplayed edge
+					is already displayed */
 
-	 }
+					// Second line of else-if statement from https://stackoverflow.com/questions/8217419/how-to-determine-if-javascript-array-contains-an-object-with-an-attribute-that-e
+
+					else if (endNodesDrawn[j].name == undisplayedEdges[i].tail &&
+					nodes.filter(e => e.name === undisplayedEdges[i].head).length > 0 ) {
+
+						let startNode = endNodesDrawn[j]; // Starting node will be node just drawn
+						let endNode = [];
+
+						// Endoing node will be another node that is already displayed
+						for (let k = 0; k < polObjs.length; k++) {
+							if (polObjs[k].name == undisplayedEdges[i].head) {
+								endNode = polObjs[k];
+								break;
+							}
+						}
+
+						// Set locations
+						startNode.x = Math.random() * (width - 10) + 10;
+						startNode.y = Math.random() * (width - 10) + 10;
+						endNode.x = Math.random() * (width - 10) + 10;
+						endNode.y = Math.random() * (width - 10) + 10;
+
+						// Add the edge
+						let newEdge = {head: startNode, tail: endNode, amount: undisplayedEdges.amount};
+						let filtRes = graph.paths.filter(function(endNode){
+							if (endNode.head === newEdge.tail && endNode.tail === newEdge.head){
+								graph.edges.splice(graph.edges.indexOf(endNode), 1);
+							} // close if-statement
+							return endNode.head === newEdge.head && endNode.tail === newEdge.tail;
+						}); // close filtRes
+						if (!filtRes[0].length){
+							graph.edges.push(newEdge);
+							graph.updateGraph();
+						} // close if-statement
+
+						let index = undisplayedEdges.indexOf(undisplayedEdges[i]);
+						if (index > -1) {
+							undisplayedEdges.splice(index, 1);
+							i--; // Array indices have shifted, so we need to decrement loop varialbe
+						} // close if
+
+					}
+
+
+				} // close j loop
+
+			} // close i loop
+
+
+	 } // close function
 
 
     /**** MAIN ****/
