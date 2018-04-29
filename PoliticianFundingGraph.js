@@ -617,13 +617,11 @@ function graphics() {
 					for (let j = 0; j < fundObjs.length; j++) {
 						if (fundObjs[j].name == undisplayedEdges[i].tail) {
 							endNode = fundObjs[j];
+							endNode.x = startNode.x+(400*Math.cos(j));
+							endNode.y = startNode.y+(400*Math.sin(j));
 							break;
 						}
 					}
-
-					// Set random coordinates for placement of endNode
-					endNode.x = Math.random() * (width - 10) + 10;
-					endNode.y = Math.random() * (width - 10) + 10;
 
 					// Check if endNode is already in nodes list before pushing it
 					let nodeInList = false;
@@ -672,13 +670,11 @@ function graphics() {
 					for (let j = 0; j < polObjs.length; j++) {
 						if (polObjs[j].name == undisplayedEdges[i].head) {
 							endNode = polObjs[j];
+							endNode.x = startNode.x+(400*Math.cos(j));
+							endNode.y = startNode.y+(400*Math.sin(j));
 							break;
 						}
 					}
-
-					// Set random coordinates for endNode
-					endNode.x = Math.random() * (width - 10) + 10;
-					endNode.y = Math.random() * (width - 10) + 10;
 
 					// Check if node is already in nodes list before pushing it
 					let nodeInList = false;
