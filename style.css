@@ -112,12 +112,20 @@ g.conceptG.politician circle{
   stroke-width: 2px;
 }
 
-g.conceptG:hover circle{
-  fill: #50a7b2;
+g.conceptG.funding:hover circle{
+  fill: #61A8C6;
 }
 
-g.selected circle{
-  fill: rgb(250, 232, 255);
+g.selected.funding circle{
+  fill: #61A8C6;
+}
+
+g.conceptG.politician:hover circle{
+  fill: #9291BA;
+}
+
+g.selected.politician circle{
+  fill: #9291BA;
 }
 
 
