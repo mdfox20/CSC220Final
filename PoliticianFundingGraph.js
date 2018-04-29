@@ -294,37 +294,21 @@ function graphics() {
 
       if (!mouseDownNode) return;
 
-      if (mouseDownNode !== d){
-        console.log(d);
-        // we're in a different node: create new edge for mousedown edge and add to graph
-        let newEdge = {head: mouseDownNode, tail: d};
-        let filtRes = thisGraph.paths.filter(function(d){
-          if (d.head === newEdge.tail && d.tail === newEdge.head){
-            thisGraph.edges.splice(thisGraph.edges.indexOf(d), 1);
-          }
-          return d.head === newEdge.head && d.tail === newEdge.tail;
-        });
-        if (!filtRes[0].length){
-          thisGraph.edges.push(newEdge);
-          thisGraph.updateGraph();
-        }
+      // we're in the same node
+      if (state.justDragged) {
+        // dragged, not clicked
+        state.justDragged = false;
       } else{
-        // we're in the same node
-        if (state.justDragged) {
-          // dragged, not clicked
-          state.justDragged = false;
-        } else{
-            if (state.selectedEdge){
-              thisGraph.removeSelectFromEdge();
-            }
-            let prevNode = state.selectedNode;
+          if (state.selectedEdge){
+            thisGraph.removeSelectFromEdge();
+          }
+          let prevNode = state.selectedNode;
 
-            if (!prevNode || prevNode.name !== d.name){
-              thisGraph.replaceSelectNode(d3node, d);
-            } else{
-              thisGraph.removeSelectFromNode();
-            }
-        }
+          if (!prevNode || prevNode.name !== d.name){
+            thisGraph.replaceSelectNode(d3node, d);
+          } else{
+            thisGraph.removeSelectFromNode();
+          }
       }
       state.mouseDownNode = null;
       return;
@@ -401,6 +385,7 @@ function graphics() {
       thisGraph.paths = thisGraph.paths.data(thisGraph.edges, function(d){
         return String(d.head.name) + "+" + String(d.tail.name);
       });
+
       let paths = thisGraph.paths;
       // update existing paths
       paths.style('marker-end', 'url(#end-arrow)')
@@ -409,7 +394,8 @@ function graphics() {
         })
         .attr("d", function(d){
           return "M" + d.head.x + "," + d.head.y + "L" + d.tail.x + "," + d.tail.y;
-        });
+        })
+				//.attr("stroke-width", function(d) {return d.amount/5000; });
 
       // add new paths
       paths.enter()
@@ -419,6 +405,7 @@ function graphics() {
         .attr("d", function(d){
           return "M" + d.head.x + "," + d.head.y + "L" + d.tail.x + "," + d.tail.y;
         })
+				.attr("stroke-width", function(d) {return d.amount/5000; })
         .on("mousedown", function(d){
           thisGraph.pathMouseDown.call(thisGraph, d3.select(this), d);
           }
@@ -636,7 +623,7 @@ function graphics() {
 
 					// Adapted from d3 function to add edges
 					// Draw edge between start node and end node
-					let newEdge = {head: startNode, tail: endNode, amount: undisplayedEdges.amount};
+					let newEdge = {head: startNode, tail: endNode, amount: undisplayedEdges[i].amount};
 					let filtRes = graph.paths.filter(function(endNode){
 						if (endNode.head === newEdge.tail && endNode.tail === newEdge.head){
 							graph.edges.splice(graph.edges.indexOf(endNode), 1);
@@ -689,7 +676,7 @@ function graphics() {
 
 					// Adapted from d3 function to add edges
 					// Draw edge between start node and end node
-					let newEdge = {head: startNode, tail: endNode, amount: undisplayedEdges.amount};
+					let newEdge = {head: startNode, tail: endNode, amount: undisplayedEdges[i].amount};
 					let filtRes = graph.paths.filter(function(endNode){
 						if (endNode.head === newEdge.tail && endNode.tail === newEdge.head){
 							graph.edges.splice(graph.edges.indexOf(endNode), 1);
@@ -754,7 +741,7 @@ function graphics() {
 						endNode.y = Math.random() * (width - 10) + 10;
 
 						// Add the edge
-						let newEdge = {head: startNode, tail: endNode, amount: undisplayedEdges.amount};
+						let newEdge = {head: startNode, tail: endNode, amount: undisplayedEdges[i].amount};
 						let filtRes = graph.paths.filter(function(endNode){
 							if (endNode.head === newEdge.tail && endNode.tail === newEdge.head){
 								graph.edges.splice(graph.edges.indexOf(endNode), 1);
@@ -804,7 +791,7 @@ function graphics() {
 						endNode.y = Math.random() * (width - 10) + 10;
 
 						// Add the edge
-						let newEdge = {head: startNode, tail: endNode, amount: undisplayedEdges.amount};
+						let newEdge = {head: startNode, tail: endNode, amount: undisplayedEdges[i].amount};
 						let filtRes = graph.paths.filter(function(endNode){
 							if (endNode.head === newEdge.tail && endNode.tail === newEdge.head){
 								graph.edges.splice(graph.edges.indexOf(endNode), 1);
