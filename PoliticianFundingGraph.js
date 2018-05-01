@@ -532,9 +532,10 @@ function graphics() {
         }
       }
 
-      // Set random coordinates to place polNode
-      polNode.x = Math.random() * (width - 10) + 10;
-      polNode.y = Math.random() * (height - 10) + 10;
+      // Set coordinates to place polNode
+			polNode.x = 3000*Math.cos(nodes.length) - 2500;
+      polNode.y = 3000*Math.sin(nodes.length) + 500;
+
 
 			nodes.push(polNode); // Add to list of nodes
 			updateEdges(polNode); // Update the edges for this node
@@ -557,8 +558,8 @@ function graphics() {
       }
 
       // Set random coordinates for fundNode
-			fundNode.x = Math.random() * (width - 10) + 10;
-			fundNode.y = Math.random() * (height - 10) + 10;
+			fundNode.x = Math.random()* 2 * (width + 10) + 10;
+			fundNode.y = Math.random() * 2 * (height - 10) + 10;
 
 			nodes.push(fundNode); // Add to list of nodes
 			updateEdges(fundNode); // Update edges for this given node
@@ -734,12 +735,6 @@ function graphics() {
 							}
 						}
 
-						// Set locations
-						startNode.x = Math.random() * (width - 10) + 10;
-						startNode.y = Math.random() * (width - 10) + 10;
-						endNode.x = Math.random() * (width - 10) + 10;
-						endNode.y = Math.random() * (width - 10) + 10;
-
 						// Add the edge
 						let newEdge = {head: startNode, tail: endNode, amount: undisplayedEdges[i].amount};
 						let filtRes = graph.paths.filter(function(endNode){
@@ -783,12 +778,6 @@ function graphics() {
 								break;
 							}
 						}
-
-						// Set locations
-						startNode.x = Math.random() * (width - 10) + 10;
-						startNode.y = Math.random() * (width - 10) + 10;
-						endNode.x = Math.random() * (width - 10) + 10;
-						endNode.y = Math.random() * (width - 10) + 10;
 
 						// Add the edge
 						let newEdge = {head: startNode, tail: endNode, amount: undisplayedEdges[i].amount};
