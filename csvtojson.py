@@ -22,7 +22,7 @@ for fname in fnames:
       with open(f'{fname.replace(".csv", "")}_fixed.csv','w') as finalcols:
         writer = csv.writer(finalcols)
         for row in reader:
-          writer.writerow( (row[3], row[4], "funding source"))
+          writer.writerow( (row[3], row[4]))
 
         finalcols.close()
         allcols.close()
@@ -30,7 +30,7 @@ for fname in fnames:
   # Convert CSV to JSON
   csvfile = open(f'{fname.replace(".csv", "")}_fixed.csv', 'r')
 
-  fieldnames = ("name","amount", "type")
+  fieldnames = ("name","amount")
   reader = csv.DictReader(csvfile, fieldnames)
   next(reader); # Skip header row
 
@@ -39,7 +39,7 @@ for fname in fnames:
 
   for row in reader:
     nodesjson.write(',\n')
-    json.dump({"name": row.get("name"), "type": row.get("type")}, nodesjson)
+    json.dump({"name": row.get("name"), "type": "funding source"}, nodesjson)
 
     json.dump({"head": name, "tail": row.get("name"), "amount": row.get("amount")}, edgesjson)
     edgesjson.write(',\n')
