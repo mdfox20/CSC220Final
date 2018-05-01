@@ -395,7 +395,6 @@ function graphics() {
         .attr("d", function(d){
           return "M" + d.head.x + "," + d.head.y + "L" + d.tail.x + "," + d.tail.y;
         })
-				//.attr("stroke-width", function(d) {return d.amount/5000; });
 
       // add new paths
       paths.enter()
@@ -520,27 +519,36 @@ function graphics() {
 
     // Executes whenever addPol button is clicked
     addPol.onclick = function(){
-
-      // Get name of politician from drop down menu
+			// Get name of politician from drop down menu
       selPol = document.getElementById("selPol").value;
 
-      let polNode;
-      // Find selected politician
-      for (let i = 0; i < polObjs.length; i++) {
-        if (polObjs[i].name == selPol) {
-          polNode = polObjs[i];
-        }
-      }
+			// Make sure node isn't already displayed
+			let alreadyThere = false;
 
-      // Set coordinates to place polNode
-			polNode.x = 3000*Math.cos(nodes.length) - 2500;
-      polNode.y = 3000*Math.sin(nodes.length) + 500;
+			for (let i = 0; i < nodes.length; i++) {
+				if (nodes[i].name == selPol) {
+					alreadyThere = true;
+				}
+			}
+
+			if (alreadyThere == false) {
+	      let polNode;
+	      // Find selected politician
+	      for (let i = 0; i < polObjs.length; i++) {
+	        if (polObjs[i].name == selPol) {
+	          polNode = polObjs[i];
+	        }
+	      }
+
+	      // Set coordinates to place polNode
+				polNode.x = 3000*Math.cos(nodes.length) - 2500;
+	      polNode.y = 3000*Math.sin(nodes.length) + 500;
 
 
-			nodes.push(polNode); // Add to list of nodes
-			updateEdges(polNode); // Update the edges for this node
-			graph.updateGraph(); // Update the display
-
+				nodes.push(polNode); // Add to list of nodes
+				updateEdges(polNode); // Update the edges for this node
+				graph.updateGraph(); // Update the display
+			}
     };
 
     // Executes whenever addFundSource button is clicked
@@ -549,21 +557,32 @@ function graphics() {
       // Get name of funding source from drop down menu
       selFund = document.getElementById("selFundSource").value;
 
-      let fundNode;
-      // Find selected funding source
-      for (let i = 0; i < fundObjs.length; i++) {
-        if (fundObjs[i].name == selFund) {
-          fundNode = fundObjs[i];
-        }
-      }
+			// Make sure node isn't already displayed
+			let alreadyThere = false;
 
-      // Set random coordinates for fundNode
-			fundNode.x = Math.random()* 2 * (width + 10) + 10;
-			fundNode.y = Math.random() * 2 * (height - 10) + 10;
+			for (let i = 0; i < nodes.length; i++) {
+				if (nodes[i].name == selFund) {
+					alreadyThere = true;
+				}
+			}
 
-			nodes.push(fundNode); // Add to list of nodes
-			updateEdges(fundNode); // Update edges for this given node
-			graph.updateGraph(); // Update display
+			if (alreadyThere == false) {
+	      let fundNode;
+	      // Find selected funding source
+	      for (let i = 0; i < fundObjs.length; i++) {
+	        if (fundObjs[i].name == selFund) {
+	          fundNode = fundObjs[i];
+	        }
+	      }
+
+	      // Set random coordinates for fundNode
+				fundNode.x = Math.random()* 2 * (width + 10) + 10;
+				fundNode.y = Math.random() * 2 * (height - 10) + 10;
+
+				nodes.push(fundNode); // Add to list of nodes
+				updateEdges(fundNode); // Update edges for this given node
+				graph.updateGraph(); // Update display
+			}
     }
 
     // Executes whenever clear button is clicked
