@@ -626,8 +626,8 @@ function graphics() {
 					for (let j = 0; j < fundObjs.length; j++) {
 						if (fundObjs[j].name == undisplayedEdges[i].tail) {
 							endNode = fundObjs[j];
-							endNode.x = startNode.x+(400*Math.cos(j));
-							endNode.y = startNode.y+(400*Math.sin(j));
+							endNode.x = startNode.x+(400*Math.cos(endNodesDrawn.length*Math.PI/10));
+							endNode.y = startNode.y+(400*Math.sin(endNodesDrawn.length*Math.PI/10));
 							break;
 						}
 					}
