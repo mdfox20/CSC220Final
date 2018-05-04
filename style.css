@@ -1,3 +1,42 @@
+/* Tooltip from https://www.w3schools.com/css/tryit.asp?filename=trycss_tooltip_transition */
+.tooltip {
+    position: relative;
+    display: inline-block;
+    font-family: "Arial Black", Gadget, sans-serif;
+    color: #fff;
+    font-size: xx-large;
+    line-height: 100%;
+    vertical-align: -20%;
+    padding-right: 80px;
+}
+
+.tooltip .tooltiptext {
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: medium;
+    line-height: normal;
+    visibility: hidden;
+    width: 300px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    top: 180%;
+    left: -130%;
+    margin-left: -150px;
+
+    /* Fade in tooltip - takes 1 second to go from 0% to 100% opac: */
+    opacity: 0;
+    transition: opacity 1s;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
 img {
   position: fixed;
   overflow: hidden;
@@ -11,6 +50,7 @@ fieldset {
   border-color: #691c14;
   border-style: solid;
   background-color:#50a7b2;
+  font-family: Tahoma, Geneva, sans-serif;
 }
 div {
   text-align: right;
@@ -35,11 +75,15 @@ button { /* from https://www.w3schools.com/css/css_form.asp */
   border: solid;
   border-color: #691c14;
   color: white;
-  padding: 8px 10px;
-  text-decoration: none;
+  padding: 6px 10px;
+  /* text-decoration: none; */
+  font-size: medium;
   margin: 4px 2px;
   cursor: pointer;
-  margin-right: 100px
+  margin-right: 40px;
+}
+#clear {
+  margin-right: 5px;
 }
 body{
   margin: 0;
