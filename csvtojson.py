@@ -21,8 +21,13 @@ for fname in fnames:
       reader = csv.reader(allcols)
       with open(f'{fname.replace(".csv", "")}_fixed.csv','w') as finalcols:
         writer = csv.writer(finalcols)
+        numrows = 0;
         for row in reader:
-          writer.writerow( (row[3], row[4]))
+          numrows += 1
+          if numrows < 22:
+            writer.writerow( (row[3], row[4]))
+          else:
+            break
 
         finalcols.close()
         allcols.close()

@@ -620,12 +620,15 @@ function graphics() {
 				   because all head nodes in edges.json are politicians */
 				if (undisplayedEdges[i].head == startNode.name) {
 
+
+
 					// Search through fundObjs to find the proper endNode for the edge
 					for (let j = 0; j < fundObjs.length; j++) {
 						if (fundObjs[j].name == undisplayedEdges[i].tail) {
 							endNode = fundObjs[j];
-							endNode.x = startNode.x+(400*Math.cos(j));
-							endNode.y = startNode.y+(400*Math.sin(j));
+							console.log(endNodesDrawn.length);
+							endNode.x = startNode.x+(400*Math.cos(endNodesDrawn.length*Math.PI/10));
+							endNode.y = startNode.y+(400*Math.sin(endNodesDrawn.length*Math.PI/10));
 							break;
 						}
 					}
