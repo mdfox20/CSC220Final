@@ -4,13 +4,15 @@ $(document).ready(function() {
 		let polNames = [];
     let fundNames = [];
     $.each(data, function(key,val) {
-      if (this.type == "politician") {
+      if ((this.type == "politician") && ($.inArray(this.name, polNames) == -1)) {
         polNames.push(this.name);
       }
-      if (this.type == "funding source") {
+      if ((this.type == "funding source") && ($.inArray(this.name, fundNames) == -1)) {
         fundNames.push(this.name);
       }
     });
+		polNames.sort();
+		fundNames.sort();
 		let selPol = $("selPol");
 		$.each(polNames, function(index, value) {
 			$("#selPol").append("<option>" + value + "</option>");
