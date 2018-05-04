@@ -531,24 +531,24 @@ function graphics() {
 				}
 			}
 
-			if (alreadyThere == false) {
-	      let polNode;
-	      // Find selected politician
-	      for (let i = 0; i < polObjs.length; i++) {
-	        if (polObjs[i].name == selPol) {
-	          polNode = polObjs[i];
-	        }
-	      }
+      let polNode;
+      // Find selected politician
+      for (let i = 0; i < polObjs.length; i++) {
+        if (polObjs[i].name == selPol) {
+          polNode = polObjs[i];
+        }
+      }
 
+			if (alreadyThere == false) {
 	      // Set coordinates to place polNode
 				polNode.x = 3000*Math.cos(nodes.length) - 2500;
 	      polNode.y = 3000*Math.sin(nodes.length) + 500;
-
-
-				nodes.push(polNode); // Add to list of nodes
-				updateEdges(polNode); // Update the edges for this node
-				graph.updateGraph(); // Update the display
 			}
+
+			nodes.push(polNode); // Add to list of nodes
+			updateEdges(polNode); // Update the edges for this node
+			graph.updateGraph(); // Update the display
+
     };
 
     // Executes whenever addFundSource button is clicked
@@ -566,23 +566,23 @@ function graphics() {
 				}
 			}
 
-			if (alreadyThere == false) {
-	      let fundNode;
-	      // Find selected funding source
-	      for (let i = 0; i < fundObjs.length; i++) {
-	        if (fundObjs[i].name == selFund) {
-	          fundNode = fundObjs[i];
-	        }
-	      }
+      let fundNode;
+      // Find selected funding source
+      for (let i = 0; i < fundObjs.length; i++) {
+        if (fundObjs[i].name == selFund) {
+          fundNode = fundObjs[i];
+        }
+      }
 
+			if (alreadyThere == false) {
 	      // Set random coordinates for fundNode
 				fundNode.x = Math.random()* 2 * (width + 10) + 10;
 				fundNode.y = Math.random() * 2 * (height - 10) + 10;
-
-				nodes.push(fundNode); // Add to list of nodes
-				updateEdges(fundNode); // Update edges for this given node
-				graph.updateGraph(); // Update display
 			}
+
+			nodes.push(fundNode); // Add to list of nodes
+			updateEdges(fundNode); // Update edges for this given node
+			graph.updateGraph(); // Update display
     }
 
     // Executes whenever clear button is clicked
