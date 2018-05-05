@@ -521,28 +521,33 @@ function graphics() {
 
     // Executes whenever addPol button is clicked
     addPol.onclick = function(){
+
 			// Get name of politician from drop down menu
       selPol = document.getElementById("selPol").value;
 
-			// Make sure node isn't already displayed
-			let alreadyThere = false;
 
-			for (let i = 0; i < nodes.length; i++) {
-				if (nodes[i].name == selPol) {
-					alreadyThere = true;
-				}
-			}
+			// Find selected politician
 
       let polNode;
 			let posInList;
-      // Find selected politician
 
-      for (let i = 0; i < polObjs.length; i++) {
+      for (let i = 0; i < polObjs.length; i++) { // Loop through polObjs
         if (polObjs[i].name == selPol) {
           polNode = polObjs[i];
 					posInList = i;
         }
       }
+
+
+			/* Check to see if node is already displayed. If it is, don't update
+			   its position on the screen */
+
+			let alreadyThere = false;
+			for (let i = 0; i < nodes.length; i++) {
+				if (nodes[i].name == selPol) {
+					alreadyThere = true;
+				}
+			}
 
 			if (alreadyThere == false) {
 	      // Set coordinates to place polNode
@@ -562,15 +567,6 @@ function graphics() {
       // Get name of funding source from drop down menu
       selFund = document.getElementById("selFundSource").value;
 
-			// Make sure node isn't already displayed
-			let alreadyThere = false;
-
-			for (let i = 0; i < nodes.length; i++) {
-				if (nodes[i].name == selFund) {
-					alreadyThere = true;
-				}
-			}
-
       let fundNode;
       // Find selected funding source
       for (let i = 0; i < fundObjs.length; i++) {
@@ -578,6 +574,16 @@ function graphics() {
           fundNode = fundObjs[i];
         }
       }
+
+			/* Check to see if node is already displayed. If it is, don't update
+				 its position on the screen */
+
+			let alreadyThere = false;
+			for (let i = 0; i < nodes.length; i++) {
+				if (nodes[i].name == selFund) {
+					alreadyThere = true;
+				}
+			}
 
 			if (alreadyThere == false) {
 	      // Set random coordinates for fundNode
@@ -593,19 +599,12 @@ function graphics() {
     // Executes whenever clear button is clicked
 		clear.onclick = function() {
 
-			// Clear nodes and edges from d3 variables
+			// Clear nodes and edges from D3 variables
 			nodes.length = 0;
 			edges.length = 0;
 
-			// Now reload the edges from JSON and reset edge variables
-			fetch("edges.json").then(function(response){
-				if(response.ok){
-					response.json().then(function(json){
-						allEdges = json;
-						undisplayedEdges = allEdges;  // Initially, no edges are displayed
-					});
-				}
-			});
+			// Update undisplayedEdges to reflect that no edges are displayed
+			undisplayedEdges = allEdges;
 
 			graph.updateGraph(); // Update display
 
