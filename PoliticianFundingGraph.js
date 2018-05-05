@@ -471,7 +471,25 @@ function graphics() {
     };
 
 
-    // ADDED CODE BLOCKS //
+		// ADDED CODE BLOCKS //
+
+		GraphCreator.prototype.addEdge = function(startNode, endNode, amount) {
+
+			// Adapted from initial d3 function to add edges
+			// Draw edge between start node and end node
+			let newEdge = {head: startNode, tail: endNode, amount: amount};
+			let filtRes = graph.paths.filter(function(endNode){
+				if (endNode.head === newEdge.tail && endNode.tail === newEdge.head){
+					graph.edges.splice(graph.edges.indexOf(endNode), 1);
+				}
+				return endNode.head === newEdge.head && endNode.tail === newEdge.tail;
+			});
+			if (!filtRes[0].length){
+				graph.edges.push(newEdge);
+				graph.updateGraph();
+			}
+
+		}
 
 
     // Grab button elements from HTML
@@ -624,8 +642,6 @@ function graphics() {
 				   because all head nodes in edges.json are politicians */
 				if (undisplayedEdges[i].head == startNode.name) {
 
-
-
 					// Search through fundObjs to find the proper endNode for the edge
 					for (let j = 0; j < fundObjs.length; j++) {
 						if (fundObjs[j].name == undisplayedEdges[i].tail) {
@@ -643,25 +659,11 @@ function graphics() {
 							nodeInList = true;
 						}
 					}
-					if (!(nodeInList)) {
-						nodes.push(endNode);
-					}
-
-					// Adapted from d3 function to add edges
-					// Draw edge between start node and end node
-					let newEdge = {head: startNode, tail: endNode, amount: undisplayedEdges[i].amount};
-					let filtRes = graph.paths.filter(function(endNode){
-						if (endNode.head === newEdge.tail && endNode.tail === newEdge.head){
-							graph.edges.splice(graph.edges.indexOf(endNode), 1);
-						}
-						return endNode.head === newEdge.head && endNode.tail === newEdge.tail;
-					});
-					if (!filtRes[0].length){
-						graph.edges.push(newEdge);
-						graph.updateGraph();
-					}
+					if (!(nodeInList)) {nodes.push(endNode);}
 
 					endNodesDrawn.push(endNode);
+
+					graph.addEdge(startNode, endNode, undisplayedEdges[i].amount);
 
 					/* Remove from undisplayedEdges the edge just added to the display,
 					   to prevent the program from unecessarily redrawing edges.
@@ -671,7 +673,6 @@ function graphics() {
 						undisplayedEdges.splice(index, 1);
 						i--; // Array indices have shifted, so we need to decrement loop varialbe
 					}
-
 
 				} // close if-statement
 
@@ -696,25 +697,11 @@ function graphics() {
 							nodeInList = true;
 						}
 					}
-					if (!(nodeInList)) {
-						nodes.push(endNode);
-					}
-
-					// Adapted from d3 function to add edges
-					// Draw edge between start node and end node
-					let newEdge = {head: startNode, tail: endNode, amount: undisplayedEdges[i].amount};
-					let filtRes = graph.paths.filter(function(endNode){
-						if (endNode.head === newEdge.tail && endNode.tail === newEdge.head){
-							graph.edges.splice(graph.edges.indexOf(endNode), 1);
-						} // close if-statement
-						return endNode.head === newEdge.head && endNode.tail === newEdge.tail;
-					}); // close filtRes
-					if (!filtRes[0].length){
-						graph.edges.push(newEdge);
-						graph.updateGraph();
-					} // close if-statement
+					if (!(nodeInList)) {nodes.push(endNode);}
 
 					endNodesDrawn.push(endNode);
+
+					graph.addEdge(startNode, endNode, undisplayedEdges[i].amount);
 
 					/* Remove from undisplayedEdges the edge just added to the display,
 					   to prevent the program from unecessarily redrawing edges.
@@ -750,7 +737,7 @@ function graphics() {
 					nodes.filter(e => e.name === undisplayedEdges[i].tail).length > 0 ){
 
 						let startNode = endNodesDrawn[j]; // Starting node will be node just drawn
-						let endNode = [];
+						let endNode;
 
 						// Ending node will be another node that already is displayed
 						for (let k = 0; k < fundObjs.length; k++) {
@@ -760,18 +747,7 @@ function graphics() {
 							}
 						}
 
-						// Add the edge
-						let newEdge = {head: startNode, tail: endNode, amount: undisplayedEdges[i].amount};
-						let filtRes = graph.paths.filter(function(endNode){
-							if (endNode.head === newEdge.tail && endNode.tail === newEdge.head){
-								graph.edges.splice(graph.edges.indexOf(endNode), 1);
-							} // close if-statement
-							return endNode.head === newEdge.head && endNode.tail === newEdge.tail;
-						}); // close filtRes
-						if (!filtRes[0].length){
-							graph.edges.push(newEdge);
-							graph.updateGraph();
-						} // close if-statement
+						graph.addEdge(startNode, endNode, undisplayedEdges[i].amount);
 
 						let index = undisplayedEdges.indexOf(undisplayedEdges[i]);
 						if (index > -1) {
@@ -794,7 +770,7 @@ function graphics() {
 					nodes.filter(e => e.name === undisplayedEdges[i].head).length > 0 ) {
 
 						let startNode = endNodesDrawn[j]; // Starting node will be node just drawn
-						let endNode = [];
+						let endNode;
 
 						// Endoing node will be another node that is already displayed
 						for (let k = 0; k < polObjs.length; k++) {
@@ -804,18 +780,7 @@ function graphics() {
 							}
 						}
 
-						// Add the edge
-						let newEdge = {head: startNode, tail: endNode, amount: undisplayedEdges[i].amount};
-						let filtRes = graph.paths.filter(function(endNode){
-							if (endNode.head === newEdge.tail && endNode.tail === newEdge.head){
-								graph.edges.splice(graph.edges.indexOf(endNode), 1);
-							} // close if-statement
-							return endNode.head === newEdge.head && endNode.tail === newEdge.tail;
-						}); // close filtRes
-						if (!filtRes[0].length){
-							graph.edges.push(newEdge);
-							graph.updateGraph();
-						} // close if-statement
+						graph.addEdge(startNode, endNode, undisplayedEdges[i].amount);
 
 						let index = undisplayedEdges.indexOf(undisplayedEdges[i]);
 						if (index > -1) {
