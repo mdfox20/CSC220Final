@@ -106,13 +106,13 @@ function graphics() {
               // todo check if edge-mode is selected
             });
 
-      // listen for key events
-      // d3.select(window).on("keydown", function(){
-      //   thisGraph.svgKeyDown.call(thisGraph);
-      // })
-      // .on("keyup", function(){
-      //   thisGraph.svgKeyUp.call(thisGraph);
-      // });
+      //listen for key events
+      d3.select(window).on("keydown", function(){
+        thisGraph.svgKeyDown.call(thisGraph);
+      })
+      .on("keyup", function(){
+        thisGraph.svgKeyUp.call(thisGraph);
+      });
       svg.on("mousedown", function(d){thisGraph.svgMouseDown.call(thisGraph, d);});
       svg.on("mouseup", function(d){thisGraph.svgMouseUp.call(thisGraph, d);});
 
@@ -216,8 +216,8 @@ function graphics() {
     GraphCreator.prototype.spliceLinksForNode = function(node) {
       let thisGraph = this,
           toSplice = thisGraph.edges.filter(function(l) {
-        return (l.head === node || l.tail === node);
-      });
+        		return (l.head === node || l.tail === node);
+      		});
       toSplice.map(function(l) {
         thisGraph.edges.splice(thisGraph.edges.indexOf(l), 1);
       });
@@ -301,6 +301,7 @@ function graphics() {
         // dragged, not clicked
         state.justDragged = false;
       } else{
+				// clicked, not dragged
           if (state.selectedEdge){
             thisGraph.removeSelectFromEdge();
           }
@@ -361,12 +362,8 @@ function graphics() {
         d3.event.preventDefault();
         if (selectedNode){
           thisGraph.nodes.splice(thisGraph.nodes.indexOf(selectedNode), 1);
-          thisGraph.spliceLinksForNode(selectedNode);
+					thisGraph.spliceLinksForNode(selectedNode);
           state.selectedNode = null;
-          thisGraph.updateGraph();
-        } else if (selectedEdge){
-          thisGraph.edges.splice(thisGraph.edges.indexOf(selectedEdge), 1);
-          state.selectedEdge = null;
           thisGraph.updateGraph();
         }
         break;
@@ -470,7 +467,6 @@ function graphics() {
       svg.attr("width", x).attr("height", y);
     };
 
-
 		// ADDED CODE BLOCKS //
 
 		GraphCreator.prototype.addEdge = function(startNode, endNode, amount) {
@@ -490,7 +486,6 @@ function graphics() {
 			}
 
 		}
-
 
     // Grab button elements from HTML
     let addPol = document.querySelector('#addPol');
@@ -561,8 +556,9 @@ function graphics() {
 			   its position on the screen */
 
 			let alreadyThere = false;
-			for (let i = 0; i < nodes.length; i++) {
-				if (nodes[i].name == selPol) {
+			for (let i = 0; i < graph.nodes.length; i++) {
+				if (graph.nodes[i].name == selPol) {
+					console.log("already there");
 					alreadyThere = true;
 				}
 			}
@@ -573,15 +569,14 @@ function graphics() {
 	      polNode.y = 3000*Math.sin(posInList*2*Math.PI/polObjs.length) + 500;
 			}
 
-			nodes.push(polNode); // Add to list of nodes
-			updateEdges(polNode); // Update the edges for this node
+			graph.nodes.push(polNode); // Add to list of nodes
+			addEdgesForNode(polNode); // Update the edges for this node
 			graph.updateGraph(); // Update the display
 
     };
 
     // Executes whenever addFundSource button is clicked
     addFundSource.onclick = function(){
-
       // Get name of funding source from drop down menu
       selFund = document.getElementById("selFundSource").value;
 
@@ -597,9 +592,10 @@ function graphics() {
 				 its position on the screen */
 
 			let alreadyThere = false;
-			for (let i = 0; i < nodes.length; i++) {
-				if (nodes[i].name == selFund) {
+			for (let i = 0; i < graph.nodes.length; i++) {
+				if (graph.nodes[i].name == selFund) {
 					alreadyThere = true;
+					console.log("already there");
 				}
 			}
 
@@ -609,39 +605,30 @@ function graphics() {
 				fundNode.y = Math.random() * 2 * (height - 10) + 10;
 			}
 
-			nodes.push(fundNode); // Add to list of nodes
-			updateEdges(fundNode); // Update edges for this given node
+			graph.nodes.push(fundNode); // Add to list of nodes
+			addEdgesForNode(fundNode); // Update edges for this given node
 			graph.updateGraph(); // Update display
     }
 
     // Executes whenever clear button is clicked
 		clear.onclick = function() {
+			graph.deleteGraph();
 
-			// Clear nodes and edges from D3 variables
-			nodes.length = 0;
-			edges.length = 0;
-
-			// Update undisplayedEdges to reflect that no edges are displayed
 			undisplayedEdges = allEdges;
-
-			graph.updateGraph(); // Update display
-
 		}
 
 		// Displays all currently undisplayed edges for a given node
-		function updateEdges(startNode) {
-
+		function addEdgesForNode(startNode) {
 			let endNode; // Node to draw an edge to
-
 			let endNodesDrawn = []; // End nodes that will be drawn in this function
 
+			console.log(undisplayedEdges);
+			
 			// Loop through all edges not currently displayed on screen
 			for (let i = 0; i < undisplayedEdges.length; i++) {
 
-				/* If the current node is the "head" of this edge, it is a pol node,
-				   because all head nodes in edges.json are politicians */
+				/* Case where startNode is politician, find edges to funding sources */
 				if (undisplayedEdges[i].head == startNode.name) {
-
 					// Search through fundObjs to find the proper endNode for the edge
 					for (let j = 0; j < fundObjs.length; j++) {
 						if (fundObjs[j].name == undisplayedEdges[i].tail) {
@@ -654,12 +641,12 @@ function graphics() {
 
 					// Check if endNode is already in nodes list before pushing it
 					let nodeInList = false;
-					for (let j = 0; j < nodes.length; j++) {
-						if (nodes[j].name == endNode.name) {
+					for (let j = 0; j < graph.nodes.length; j++) {
+						if (graph.nodes[j].name == endNode.name) {
 							nodeInList = true;
 						}
 					}
-					if (!(nodeInList)) {nodes.push(endNode);}
+					if (!(nodeInList)) {graph.nodes.push(endNode);}
 
 					endNodesDrawn.push(endNode);
 
@@ -692,12 +679,12 @@ function graphics() {
 
 					// Check if node is already in nodes list before pushing it
 					let nodeInList = false;
-					for (let j = 0; j < nodes.length; j++) {
-						if (nodes[j].name == endNode.name) {
+					for (let j = 0; j < graph.nodes.length; j++) {
+						if (graph.nodes[j].name == endNode.name) {
 							nodeInList = true;
 						}
 					}
-					if (!(nodeInList)) {nodes.push(endNode);}
+					if (!(nodeInList)) {graph.nodes.push(endNode);}
 
 					endNodesDrawn.push(endNode);
 
@@ -734,7 +721,7 @@ function graphics() {
 					// Second line of if-statement from https://stackoverflow.com/questions/8217419/how-to-determine-if-javascript-array-contains-an-object-with-an-attribute-that-e
 
 					if ( endNodesDrawn[j].name == undisplayedEdges[i].head &&
-					nodes.filter(e => e.name === undisplayedEdges[i].tail).length > 0 ){
+					graph.nodes.filter(e => e.name === undisplayedEdges[i].tail).length > 0 ){
 
 						let startNode = endNodesDrawn[j]; // Starting node will be node just drawn
 						let endNode;
@@ -767,7 +754,7 @@ function graphics() {
 					// Second line of else-if statement from https://stackoverflow.com/questions/8217419/how-to-determine-if-javascript-array-contains-an-object-with-an-attribute-that-e
 
 					else if (endNodesDrawn[j].name == undisplayedEdges[i].tail &&
-					nodes.filter(e => e.name === undisplayedEdges[i].head).length > 0 ) {
+					graph.nodes.filter(e => e.name === undisplayedEdges[i].head).length > 0 ) {
 
 						let startNode = endNodesDrawn[j]; // Starting node will be node just drawn
 						let endNode;
@@ -801,7 +788,6 @@ function graphics() {
 
     /**** MAIN ****/
 
-
     let docEl = document.documentElement,
         bodyEl = document.getElementsByTagName('body')[0];
 
@@ -809,7 +795,7 @@ function graphics() {
         height =  window.innerHeight|| docEl.clientHeight|| bodyEl.clientHeight;
 
     // initial node data
-    let nodes = [];
+    let nodes = []; // No nodes displayed to begin with
     let edges = []; // No edges displayed to begin with
 
     /** MAIN SVG **/
