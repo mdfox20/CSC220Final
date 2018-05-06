@@ -1,21 +1,21 @@
 # CSC220-final
 
 Class: CSC 220
-Assignment: Final Project--Initial Prototype
+Assignment: FP4: Final System
 Names: Eve Zikmund-Fisher, Hannah Waris, Maddy Fox
-Date Due: 4/26/18
+Date Due: 5/8/18
 
 Based on: https://bl.ocks.org/cjrd/6863459
 
 INSTRUCTIONS TO RUN:
-1) Set up local host for directory containing all files
-2) Run csvtojson.py
-3) Open local host page in Chrome
+1) Go to https://ezikmundfisher.github.io/CSC220-final/. 
+2) Play! Add and remove nodes using drop down menus and buttons. Drag nodes to adjust spacing for better readability.
+
+ALTERNATIVE INSTRUCTIONS:
+1) Download all files from the GitHub repository.
+2) Set up local host for in a directory containing all files.
+3) Open local host page in a web browser.
 4) Play! Add and remove nodes using drop down menus and buttons. Drag nodes to adjust spacing for better readability.
 
-THINGS WE STILL NEED TO FIX:
-- Our click to expand functionality hasn't been implemented yet.
-- Politician and Funding Source nodes all currently identical. We want these to be different colors eventually.
-- Width of edge does not vary according to amount of money yet.
-- Spacing of nodes currently randomized and gross. We want to get the correct nodes and edges displaying before we worry about pretty circles.
-- There is a bunch of excess code left over from the D3 graph displaying code we pulled of the internet. Some of it is functional, some of it isn't. We don't really want to cut it down until we are totally done, as some of it might end up being useful, for instance some of the mouse event code and such.
+Known logical errors:
+When one adds a node from a drop-down menu, then presses the clear button, then tries to add that same node again, the program only displays the node, and not any of its associated edges.
