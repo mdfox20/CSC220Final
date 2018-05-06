@@ -76,7 +76,7 @@ button { /* from https://www.w3schools.com/css/css_form.asp */
   border-color: #691c14;
   color: white;
   padding: 6px 10px;
-  /* text-decoration: none; */
+  text-decoration: none;
   font-size: medium;
   margin: 4px 2px;
   cursor: pointer;
@@ -84,6 +84,9 @@ button { /* from https://www.w3schools.com/css/css_form.asp */
 }
 #clear {
   margin-right: 5px;
+}
+button:focus{
+  outline: none;
 }
 body{
   margin: 0;
