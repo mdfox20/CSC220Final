@@ -558,7 +558,6 @@ function graphics() {
 			let alreadyThere = false;
 			for (let i = 0; i < graph.nodes.length; i++) {
 				if (graph.nodes[i].name == selPol) {
-					console.log("already there");
 					alreadyThere = true;
 				}
 			}
@@ -595,7 +594,6 @@ function graphics() {
 			for (let i = 0; i < graph.nodes.length; i++) {
 				if (graph.nodes[i].name == selFund) {
 					alreadyThere = true;
-					console.log("already there");
 				}
 			}
 
@@ -622,8 +620,6 @@ function graphics() {
 			let endNode; // Node to draw an edge to
 			let endNodesDrawn = []; // End nodes that will be drawn in this function
 
-			console.log(undisplayedEdges);
-			
 			// Loop through all edges not currently displayed on screen
 			for (let i = 0; i < undisplayedEdges.length; i++) {
 
