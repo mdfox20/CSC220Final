@@ -114,9 +114,6 @@ function graphics() {
             .on("drag", function(args){
               thisGraph.state.justDragged = true;
               thisGraph.dragmove.call(thisGraph, args);
-            })
-            .on("dragend", function() {
-              // todo check if edge-mode is selected
             });
 
       //listen for key events
@@ -132,12 +129,7 @@ function graphics() {
       // listen for dragging
       let dragSvg = d3.behavior.zoom()
             .on("zoom", function(){
-              // if (d3.event.headEvent.shiftKey){
-              //   // TODO  the internal d3 state is still changing
-              //   return false;
-              // } else{
-                thisGraph.zoomed.call(thisGraph);
-              // }
+              thisGraph.zoomed.call(thisGraph);
               return true;
             })
             .on("zoomstart", function(){
@@ -343,15 +335,6 @@ function graphics() {
       if (state.justScaleTransGraph) {
         // dragged not clicked
         state.justScaleTransGraph = false;
-      } else if (state.graphMouseDown && d3.event.shiftKey){
-        // clicked not dragged from svg
-        let xycoords = d3.mouse(thisGraph.svgG.node()),
-            d = {name: "new concept", x: xycoords[0], y: xycoords[1]};
-        thisGraph.updateGraph();
-      } else if (state.shiftNodeDrag){
-        // dragged from node
-        state.shiftNodeDrag = false;
-        thisGraph.dragLine.classed("hidden", true);
       }
       state.graphMouseDown = false;
     };
