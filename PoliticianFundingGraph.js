@@ -1,30 +1,43 @@
-// Set up document by displaying options for dropdown menus
+/** Set up document by displaying options for dropdown menus */
 $(document).ready(function() {
+
 	$.getJSON("nodes.json", function(data) {
+
+		// Initialize arrays to store options for dropdown menus
 		let polNames = [];
     let fundNames = [];
+
     $.each(data, function(key,val) {
+			// Store all nodes of type "politician" in polNames array
       if ((this.type == "politician") && ($.inArray(this.name, polNames) == -1)) {
         polNames.push(this.name);
-      }
+      } // Store all nodes of type "funding source" in fundNames array
       if ((this.type == "funding source") && ($.inArray(this.name, fundNames) == -1)) {
         fundNames.push(this.name);
       }
     });
+
+		// Sort arrays alphabetically, so options are organized
 		polNames.sort();
 		fundNames.sort();
+
+		// Add all politician objects to the politician menu
 		let selPol = $("selPol");
 		$.each(polNames, function(index, value) {
 			$("#selPol").append("<option>" + value + "</option>");
 		});
+
+		// Add all funding source options to the funding source menu
     let selFundHead = $("selFundSource");
     $.each(fundNames, function(index, value) {
       $("#selFundSource").append("<option>" + value + "</option>");
     });
+
 	});
 });
 
 // Prevent browser from trying to reload page every time a button is pressed
+
 $('#addPol').click(function(e){
     e.preventDefault();
 });
@@ -35,7 +48,7 @@ $('#clear').click(function(e){
     e.preventDefault();
 });
 
-
+/** Sets up the graph and provides various methods to update its display */
 function graphics() {
 
   document.onload = (function(d3, saveAs, Blob, undefined){
@@ -330,11 +343,10 @@ function graphics() {
       if (state.justScaleTransGraph) {
         // dragged not clicked
         state.justScaleTransGraph = false;
-      } else if (state.graphMouseDown && d3.event.shiftKey){ //ADDS NODE, CHANGE TO HTML SELECTION
+      } else if (state.graphMouseDown && d3.event.shiftKey){
         // clicked not dragged from svg
         let xycoords = d3.mouse(thisGraph.svgG.node()),
-            d = {name: "new concept", x: xycoords[0], y: xycoords[1]}; //CHANGE TO CHOOSING NODE WITH MATCHING NAME
-        thisGraph.nodes.push(d);
+            d = {name: "new concept", x: xycoords[0], y: xycoords[1]};
         thisGraph.updateGraph();
       } else if (state.shiftNodeDrag){
         // dragged from node
@@ -356,6 +368,7 @@ function graphics() {
       let selectedNode = state.selectedNode,
           selectedEdge = state.selectedEdge;
 
+			// Delete a node when user selects it, then presses backspace or delete key
       switch(d3.event.keyCode) {
       case consts.BACKSPACE_KEY:
       case consts.DELETE_KEY:
@@ -467,11 +480,9 @@ function graphics() {
       svg.attr("width", x).attr("height", y);
     };
 
-		// ADDED CODE BLOCKS //
-
+		// Adapted from an initial D3 function to add edges
 		GraphCreator.prototype.addEdge = function(startNode, endNode, amount) {
 
-			// Adapted from initial d3 function to add edges
 			// Draw edge between start node and end node
 			let newEdge = {head: startNode, tail: endNode, amount: amount};
 			let filtRes = graph.paths.filter(function(endNode){
@@ -504,15 +515,14 @@ function graphics() {
     fetch("nodes.json").then(function(response){
       if(response.ok){
         response.json().then(function(json){
-					// Keep track of unique nodes to prevent adding same node name twice
-					let uniqueNodeNames = new Set();
+					let uniqueNodeNames = new Set(); // Keep track of unique nodes to prevent adding same node name twice
           for (let i = 0; i < json.length; i++) {
             if ((json[i].type == "politician") // If a new politician node
 					 	&& (!(uniqueNodeNames.has(json[i].name)))) {
-              polObjs.push(json[i]);
+              polObjs.push(json[i]); // Add to politician array
 							uniqueNodeNames.add(json[i].name);
             } else if (!(uniqueNodeNames.has(json[i].name))) { // If new fund node
-              fundObjs.push(json[i]);
+              fundObjs.push(json[i]); // Add to funding array
 							uniqueNodeNames.add(json[i].name);
             }
           }
@@ -532,25 +542,22 @@ function graphics() {
       }
     });
 
-    // Executes whenever addPol button is clicked
+    /** Executes whenever addPol button is clicked. Loads the node and
+		    relevant edges of whichever politician user selected */
     addPol.onclick = function(){
 
 			// Get name of politician from drop down menu
       selPol = document.getElementById("selPol").value;
 
-
 			// Find selected politician
-
       let polNode;
 			let posInList;
-
       for (let i = 0; i < polObjs.length; i++) { // Loop through polObjs
         if (polObjs[i].name == selPol) {
           polNode = polObjs[i];
 					posInList = i;
         }
       }
-
 
 			/* Check to see if node is already displayed. If it is, don't update
 			   its position on the screen */
@@ -574,13 +581,15 @@ function graphics() {
 
     };
 
-    // Executes whenever addFundSource button is clicked
+    /** Executes whenever addFundSource button is clicked. Loads the node and
+		    relevant edges of whichever funding source user selected */
     addFundSource.onclick = function(){
+
       // Get name of funding source from drop down menu
       selFund = document.getElementById("selFundSource").value;
 
+			// Find selected funding source
       let fundNode;
-      // Find selected funding source
       for (let i = 0; i < fundObjs.length; i++) {
         if (fundObjs[i].name == selFund) {
           fundNode = fundObjs[i];
@@ -608,22 +617,23 @@ function graphics() {
 			graph.updateGraph(); // Update display
     }
 
-    // Executes whenever clear button is clicked
+		/** Executes whenever addFundSource button is clicked. Clears all nodes
+		    and edges from the screen. */
 		clear.onclick = function() {
 			graph.deleteGraph();
-
 			undisplayedEdges = allEdges;
 		}
 
-		// Displays all currently undisplayed edges for a given node
+		/** Displays all currently undisplayed edges for a given node. */
 		function addEdgesForNode(startNode) {
+
 			let endNode; // Node to draw an edge to
 			let endNodesDrawn = []; // End nodes that will be drawn in this function
 
 			// Loop through all edges not currently displayed on screen
 			for (let i = 0; i < undisplayedEdges.length; i++) {
 
-				/* Case where startNode is politician, find edges to funding sources */
+				// Case where startNode is politician, find edges to funding sources
 				if (undisplayedEdges[i].head == startNode.name) {
 					// Search through fundObjs to find the proper endNode for the edge
 					for (let j = 0; j < fundObjs.length; j++) {
@@ -657,10 +667,9 @@ function graphics() {
 						i--; // Array indices have shifted, so we need to decrement loop varialbe
 					}
 
-				} // close if-statement
+				}
 
-				/* If the current node is the "tail" of this edge, it is a fund node,
-					 because all tail nodes in edges.json are funding sources */
+				// Case where startNode is funding source, find edges to politicians
 				else if (undisplayedEdges[i].tail == startNode.name) {
 
 					// Search through polObjs to find the proper endNode for this edge
@@ -693,11 +702,11 @@ function graphics() {
 					if (index > -1) {
 						undisplayedEdges.splice(index, 1);
 						i--; // Array indices have shifted, so we need to decrement loop varialbe
-					} // close if
+					}
 
-				} // close else
+				}
 
-			} // close for loop
+			}
 
 
 			// Loop through nodes just drawn
@@ -769,16 +778,10 @@ function graphics() {
 						if (index > -1) {
 							undisplayedEdges.splice(index, 1);
 							i--; // Array indices have shifted, so we need to decrement loop varialbe
-						} // close if
-
+						}
 					}
-
-
-				} // close j loop
-
-			} // close i loop
-
-
+				}
+			}
 	 } // close function
 
 
