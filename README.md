@@ -18,4 +18,4 @@ ALTERNATIVE INSTRUCTIONS:
 4) Play! Add and remove nodes using drop down menus and buttons. Drag nodes to adjust spacing for better readability.
 
 Known logical errors:
-When one adds a node from a drop-down menu, then presses the clear button, then tries to add that same node again, the program only displays the node, and not any of its associated edges.
+When one adds a node from a drop-down menu, then presses the clear button (and/or tries to delete an individual node by selecting it and then pressing the backspace or delete key), then tries to add that same node again, the program only displays the node, and not any of its associated edges.
